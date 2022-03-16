@@ -1,6 +1,7 @@
 {
-  "short_name": "React App",
-  "name": "Create React App Sample",
+  "short_name": "TimeTracker",
+  "name": "TimeTracker",
+  "description": "Track your day using this Web App",
   "icons": [
     {
       "src": "favicon.ico",
