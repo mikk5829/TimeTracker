@@ -10,21 +10,6 @@ export default function Home() {
         <TimerM />
         <TimerA />
         <TimerT />
-            <TimerM />
-            <TimerA />
-            <TimerT />
-            <TimerM />
-            <TimerA />
-            <TimerT />
-            <TimerM />
-            <TimerA />
-            <TimerT />
-            <TimerM />
-            <TimerA />
-            <TimerT />
-            <TimerM />
-            <TimerA />
-            <TimerT />
         </Stack> )
 
    ;

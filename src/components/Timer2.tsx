@@ -1,8 +1,9 @@
 import React, {useState} from 'react';
 import {Button, Typography} from "@mui/material";
+import {usePersistState} from "../service/state";
 
 export default function TimerA() {
-    const [number, setNumber] = useState(0)
+    const [number, setNumber] = usePersistState(0, 'alaina-number')
     return (
         <Button variant={"contained"} color="secondary" onClick={() => setNumber(number + 42348)}>
             <Typography variant={"h2"}>
