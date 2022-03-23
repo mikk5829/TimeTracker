@@ -5,7 +5,7 @@ import {usePersistState} from "../service/state";
 export default function TimerA() {
     const [number, setNumber] = usePersistState(0, 'alaina-number')
     return (
-        <Button variant={"contained"} color="secondary" onClick={() => setNumber(number + 42348)}>
+        <Button variant={"contained"} color="primary" onClick={() => setNumber(number + 42348)}>
             <Typography variant={"h2"}>
                 alaina has this many pigs <br/>
                 &#128055;&#128055;&#128055;&#128055;&#128055;&#128055;&#128055;&#128055;&#128055;&#128055; <br/>
