@@ -1,5 +1,6 @@
 import React, {useState} from 'react';
-import {Button, Typography} from "@mui/material";
+import {Button, Typography, useTheme} from "@mui/material";
+import {theme} from "../service/theme";
 import {usePersistState} from "../service/state";
 
 export default function TimerA() {

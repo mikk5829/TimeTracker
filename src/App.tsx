@@ -12,7 +12,7 @@ function App() {
             <div>
                 <Home/>
                 {fonts.map((font) => <Typography color={theme.palette.secondary.dark} variant={font}
-                                                 align={'center'}>{font}</Typography>)}
+                                                 align={'center'}>&#129433;{font}&#129433;</Typography>)}
             </div>
         </ThemeProvider>
     );
