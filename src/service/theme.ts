@@ -7,13 +7,16 @@ export const theme = createTheme({
             'sans-serif',
         ].join(','),
         h1: {
-            fontWeight: 700
+            fontWeight: 700,
+            fontSize: '3rem'
         },
         h2: {
-            fontWeight: 700
+            fontWeight: 700,
+            fontSize: '2rem'
         },
         h3: {
-            fontWeight: 700
+            fontWeight: 700,
+            fontSize: '1rem'
         },
         h4: {
             fontWeight: 700
@@ -25,7 +28,8 @@ export const theme = createTheme({
             fontWeight: 700
         },
         body1: {
-            fontWeight: 400
+            fontWeight: 400,
+            fontSize: '1rem'
         },
         body2: {
             fontWeight: 400
