@@ -1,13 +1,14 @@
 import * as React from 'react';
 import {Button, Dialog, DialogActions, DialogTitle, IconButton, Stack, TextField, Typography} from "@mui/material";
 import AddIcon from '@mui/icons-material/Add';
+import SettingsIcon from '@mui/icons-material/Settings';
 import EventItem from "../components/EventItem";
 import {usePersistState} from "../service/state";
 import {useState} from "react";
 
-function AddCategoryDialog() {
-
-}
+// function AddCategoryDialog() {
+//
+// }
 
 export default function Home() {
     const [categories, setCategories] = usePersistState([], "categories") // store tracked categories
@@ -30,24 +31,38 @@ export default function Home() {
                     alignItems="center"
                 spacing={0}
                 >
+
                     <Typography variant={"h2"}>Add Events</Typography>
-                    <IconButton aria-label="add"  color="primary" onClick={() => setOpenAddCategoryDialog(true)}>
-                        <AddIcon/>
-                    </IconButton>
+                    <Stack direction = "row">
+                        <IconButton aria-label="settings"  color="primary" onClick={() => setOpenAddCategoryDialog(true)}>
+                            <SettingsIcon/>
+                        </IconButton>
+
+                        <IconButton aria-label="add"  color="primary" onClick={() => setOpenAddCategoryDialog(true)}>
+                            <AddIcon/>
+                        </IconButton>
+                    </Stack>
+
+
                 </Stack>
                 {categories.map((cat: string) => {
                     return <EventItem eventName={cat}/> // stack all the user's specified categories
                 })}
-
             </Stack>
+
+
             <Dialog open={openAddCategoryDialog}>
                 <DialogTitle>
-                    Add a new category!
+                    Add a new category to track
                 </DialogTitle>
                 <TextField value={addCategoryText} onChange={event => setAddCategoryText(event.target.value)}>
-
                 </TextField>
                 <DialogActions>
+                    <Button variant="text" color="secondary" onClick={() => {
+                        setOpenAddCategoryDialog(false) // close the dialog
+                    }}>
+                        Cancel
+                    </Button>
                     <Button variant="contained" color="secondary" onClick={() => {
                         AddCategory(addCategoryText) // add whatever the user typed to the category list
                         setAddCategoryText("") // clear it out afterwards
