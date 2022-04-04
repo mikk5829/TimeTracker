@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {makeStyles, Paper, Typography} from "@mui/material";
+import {makeStyles, Paper, Stack, Typography} from "@mui/material";
 import Timeline from '@mui/lab/Timeline';
 import TimelineItem from '@mui/lab/TimelineItem';
 import TimelineSeparator from '@mui/lab/TimelineSeparator';
@@ -20,6 +20,8 @@ export default function Calendar() {
     return (
         <div>
         <Typography variant={"h2"}>Timeline basic view demo</Typography>
+        <Stack>
+            <Typography variant={"h3"} align ={"center"}>Monday 4 April</Typography>
     <React.Fragment>
         <Timeline position="alternate">
             <TimelineItem>
@@ -63,10 +65,62 @@ export default function Calendar() {
                 <TimelineContent>dying</TimelineContent>
             </TimelineItem>
         </Timeline>
+    </React.Fragment>
+        </Stack>
 
+        {/*yesterday demo just to see*/}
+            <Stack>
+                <Typography variant={"h3"} align ={"center"}>Sunday 3 April</Typography>
+                <React.Fragment>
+                    <Timeline position="left">
+                        <TimelineItem>
+                            <TimelineOppositeContent color="text.secondary">
+                                09:30 am
+                            </TimelineOppositeContent>
+                            <TimelineSeparator>
+                                <TimelineDot color="secondary"/>
+                                <TimelineConnector />
+                            </TimelineSeparator>
+                            <TimelineContent>Crying</TimelineContent>
+                        </TimelineItem>
+                        <TimelineItem>
+                            <TimelineOppositeContent color="text.secondary">
+                                10:00 am
+                            </TimelineOppositeContent>
+                            <TimelineSeparator>
+                                <TimelineDot color="primary"/>
+                                <TimelineConnector />
+                            </TimelineSeparator>
+                            <TimelineContent>Walking to 358</TimelineContent>
+                        </TimelineItem>
+                        <TimelineItem>
+                            <TimelineOppositeContent color="text.secondary">
+                                12:00 am
+                            </TimelineOppositeContent>
+                            <TimelineSeparator>
+                                <TimelineDot color="secondary" />
+                                <TimelineConnector />
+                            </TimelineSeparator>
+                            <TimelineContent>Failing at learning typescript</TimelineContent>
+                        </TimelineItem>
+                        <TimelineItem>
+                            <TimelineOppositeContent color="text.secondary">
+                                9:00 am
+                            </TimelineOppositeContent>
+                            <TimelineSeparator>
+                                <TimelineDot color="primary" />
+                                <TimelineConnector />
+                            </TimelineSeparator>
+                            <TimelineContent>dying</TimelineContent>
+                        </TimelineItem>
+                    </Timeline>
+                </React.Fragment>
+            </Stack>
 
         {/*try the custom one with icons and text*/}
+            <React.Fragment>
         <Typography variant={"h2"}>custom view demo</Typography>
+                <Typography variant={"h3"} align ={"center"}>Today</Typography>
         <Timeline position="right">
             <TimelineItem>
                 <TimelineOppositeContent
@@ -185,6 +239,7 @@ export default function Calendar() {
         </Timeline>
 
     </React.Fragment>
+
         </div>
 );
 }
