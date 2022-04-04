@@ -6,6 +6,15 @@ import PlayArrowIcon from '@mui/icons-material/PlayArrow';
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
 import {useState} from "react";
 
+import DatePicker from "@mui/lab/DatePicker";
+import AdapterDateFns from "@mui/lab/AdapterDateFns";
+import LocalizationProvider from '@mui/lab/LocalizationProvider';
+import DateTimePicker from '@mui/lab/DateTimePicker';
+import {dateRangePickerDayClasses} from "@mui/lab";
+import MobileDateTimePicker from '@mui/lab/MobileDateTimePicker';
+import DesktopDateTimePicker from '@mui/lab/DesktopDateTimePicker';
+import {useNow} from "@mui/lab/internal/pickers/hooks/useUtils";
+
 type EventItemProps = {eventName: string}
 
 
@@ -14,6 +23,8 @@ export default function EventItem({eventName}: EventItemProps) {
 
     const [openAddBlockDialog, setOpenAddBlockDialog] = useState(false) // open dialog to add time block
 
+    // placeholder for setting time blocks
+    const [timeValue, setTimeValue] = React.useState<Date | null>(new Date('2018-01-01T00:00:00.000Z'));
 
     return (
         <Stack
@@ -29,35 +40,25 @@ export default function EventItem({eventName}: EventItemProps) {
                 alignItems="center"
                 spacing={0}
             >
+                {/*Placeholder for Timer button*/}
                 <Button color="secondary" variant="contained" size = "large">
                      <IconButton>
                         <PlayArrowIcon/>
                     </IconButton>
                 </Button>
-                <Button color="primary" variant="contained" size = "large">
-                    {/*test adding a popup when clicking on the calendar*/}
 
-                    {/*<Dialog open={openAddBlockDialog}>*/}
-                    {/*    <DialogTitle>*/}
-                    {/*        add a time blockk*/}
-                    {/*    </DialogTitle>*/}
-                    {/*    <TextField value="hey">*/}
-                    {/*    </TextField>*/}
-                    {/*    <DialogActions>*/}
-                    {/*        <Button variant="text" color="secondary" onClick={() => {*/}
-                    {/*            setOpenAddBlockDialog(false) // close the dialog*/}
-                    {/*        }}>*/}
-                    {/*            Cancel*/}
-                    {/*        </Button>*/}
-                    {/*    </DialogActions>*/}
-                    {/*</Dialog>*/}
-
-                    <IconButton>
-                        <CalendarMonthIcon/>
-                    </IconButton>
+                {/*Placeholder for Date time picker*/}
+                <LocalizationProvider dateAdapter={AdapterDateFns}>
+                    <DateTimePicker
+                        renderInput={(params) => <TextField {...params} />}
+                        value={timeValue}
+                        onChange={(newValue) => {
+                            setTimeValue(newValue);
+                        }}
+                    />
+                </LocalizationProvider>
 
 
-                </Button>
             </Stack>
         </Stack>
     );

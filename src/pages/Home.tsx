@@ -31,7 +31,7 @@ export default function Home() {
                     alignItems="center"
                 spacing={0}
                 >
-
+                        {/*Add buttons for settings and adding a category*/}
                     <Typography variant={"h2"}>Add Events</Typography>
                     <Stack direction = "row">
                         <IconButton aria-label="settings"  color="primary" onClick={() => setOpenAddCategoryDialog(true)}>
@@ -43,14 +43,14 @@ export default function Home() {
                         </IconButton>
                     </Stack>
 
-
+                {/*Show one row per category that the user has added*/}
                 </Stack>
                 {categories.map((cat: string) => {
                     return <EventItem eventName={cat}/> // stack all the user's specified categories
                 })}
             </Stack>
 
-
+            {/*Workflow to add a new category*/}
             <Dialog open={openAddCategoryDialog}>
                 <DialogTitle>
                     Add a new category to track
