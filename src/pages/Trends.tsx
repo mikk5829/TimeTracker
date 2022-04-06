@@ -1,6 +1,8 @@
 import * as React from 'react';
-import {Stack, Typography} from "@mui/material";
+import {Typography} from "@mui/material";
 import ReactApexChart from "react-apexcharts";
+
+// code example for choosing from day, week, month views https://codesandbox.io/s/react-apex-charts-m9tww?file=/src/index.js
 
 export default function Trends() {
     const state = {
@@ -17,13 +19,38 @@ export default function Trends() {
                 enabled: false
             },
             xaxis: {
-                categories: ["January", "February", "March", "April", "May", "June", "July", "August", "September"]
+                categories: ["January", "February", "March", "April", "May", "June", "July", "August", "September"],
+                title: {
+                    text: "Month"
+                }
+            },
+            yaxis: {
+                title: {
+                    text: "Hours"
+                }
+            },
+            title: {
+                text: 'Title of chart',
+                style: {
+                    fontSize:  '16px',
+                    fontWeight:  'bold',
+                    fontFamily:  undefined,
+                    color:  'black'
+                }
             }
+            // ,
+            // theme: {
+            //     mode: 'light',
+            //     palette: 'palette1',
+            //
+            // }
+
         },
         series: [
             {
                 name: "Reading",
-                data: [30, 40, 45, 50, 49, 60, 70, 91]
+                data: [30, 40, 45, 50, 49, 60, 70, 91],
+
             },
             {
                 name: "Studying",
@@ -43,31 +70,27 @@ export default function Trends() {
         <div>
             <Typography variant={"h1"}>Trends</Typography>
 
-            <Typography align="center" variant={"h3"}>Stacked bar</Typography>
             <ReactApexChart
                 options={state.options}
                 series={state.series}
                 type="bar"
-                height="auto"
+                height="350"
                 width="100%"
-                title="hey"
             />
-            <Typography align="center" variant={"h3"}>Line</Typography>
             <ReactApexChart
                 type="line"
                 options={state.options}
                 series={state.series}
-                height={350}
+                width="100%"
+                height="350"
                 />
-
-            <Typography align="center" variant={"h3"}>Area</Typography>
             <ReactApexChart
                 type="area"
                 options={state.options}
                 series={state.series}
-                height={350}
+                width="100%"
+                height="350"
             />
-
         </div>
     );
 }
