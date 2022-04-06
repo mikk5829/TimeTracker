@@ -24,7 +24,6 @@ export default function Home() {
 
     return (
         <div>
-
             <Typography variant={"h1"}>TimeTracker</Typography>
             <Stack>
                 <Stack
@@ -67,11 +66,8 @@ export default function Home() {
                         Cancel
                     </Button>
                     <Button variant="contained" color="secondary" onClick={() => {
-                        try {
-                            dispatch({type: "addCategory", name: addCategoryText})
-                        } catch (e) {
+                        dispatch({type: "addCategory", name: addCategoryText})
 
-                        }
                         // AddCategory(addCategoryText) // add whatever the user typed to the category list
                         setAddCategoryText("") // clear it out afterwards
                         setOpenAddCategoryDialog(false) // close the dialog
