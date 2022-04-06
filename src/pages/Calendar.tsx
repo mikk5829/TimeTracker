@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {makeStyles, Paper, Stack, Typography} from "@mui/material";
+import {Paper, Stack, Typography} from "@mui/material";
 import Timeline from '@mui/lab/Timeline';
 import TimelineItem from '@mui/lab/TimelineItem';
 import TimelineSeparator from '@mui/lab/TimelineSeparator';
@@ -11,15 +11,33 @@ import FitnessCenterIcon from '@mui/icons-material/FitnessCenter';
 import LaptopMacIcon from '@mui/icons-material/LaptopMac';
 import BedIcon from '@mui/icons-material/Bed';
 import AutoStoriesIcon from '@mui/icons-material/AutoStories';
+import TextField from '@mui/material/TextField';
+import AdapterDateFns from '@mui/lab/AdapterDateFns';
+import LocalizationProvider from '@mui/lab/LocalizationProvider';
+import DatePicker from '@mui/lab/DatePicker';
 
 // could this be used? https://reactjsexample.com/a-calendar-timetable-for-react-native/
 // or should we just use Timeline from Mui? https://mui.com/components/timeline/
 // if we do timeline, we can do experiments on type/format of timeline
 
 export default function Calendar() {
+
+    // Set the date picker at the top - default to today
+    const [dateValue, setDateValue] = React.useState<Date | null>(new Date());
+
     return (
         <div>
         <Typography variant={"h2"}>Timeline basic view demo</Typography>
+            <LocalizationProvider dateAdapter={AdapterDateFns}>
+                <DatePicker
+                    label="Select date"
+                    value={dateValue}
+                    onChange={(newValue) => {
+                        setDateValue(newValue);
+                    }}
+                    renderInput={(params) => <TextField {...params} />}
+                />
+            </LocalizationProvider>
         <Stack>
             <Typography variant={"h3"} align ={"center"}>Monday 4 April</Typography>
     <React.Fragment>
@@ -39,7 +57,7 @@ export default function Calendar() {
                     10:00 am
                 </TimelineOppositeContent>
                 <TimelineSeparator>
-                    <TimelineDot color="primary"/>
+                    <TimelineDot variant = "outlined" color="primary"/>
                     <TimelineConnector />
                 </TimelineSeparator>
                 <TimelineContent>Walking to 358</TimelineContent>
@@ -49,7 +67,7 @@ export default function Calendar() {
                     12:00 am
                 </TimelineOppositeContent>
                 <TimelineSeparator>
-                    <TimelineDot color="secondary" />
+                    <TimelineDot variant = "outlined" color="secondary" />
                     <TimelineConnector />
                 </TimelineSeparator>
                 <TimelineContent>Failing at learning typescript</TimelineContent>
@@ -174,7 +192,6 @@ export default function Calendar() {
                     <Typography variant="h6" component="span">
                         Reading
                     </Typography>
-                    <Typography>Nancy Drew</Typography>
                     </Paper>
                 </TimelineContent>
             </TimelineItem>
@@ -203,7 +220,6 @@ export default function Calendar() {
                     <Typography variant="h6" component="span">
                         Schoolwork
                     </Typography>
-                    <Typography>Trying to make a PWA with no knowledge about it</Typography>
                     </Paper>
                 </TimelineContent>
             </TimelineItem>
