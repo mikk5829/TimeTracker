@@ -8,9 +8,10 @@ import DateTimePicker from '@mui/lab/DateTimePicker';
 import {usePersistState} from "../service/state";
 import CheckIcon from '@mui/icons-material/Check';
 import ClearIcon from '@mui/icons-material/Clear';
+import StopIcon from "@mui/icons-material/Stop";
 
 
-type EventItemProps = {eventName: string}
+type EventItemProps = { eventName: string }
 
 export default function EventItem({eventName}: EventItemProps) {
 
@@ -19,11 +20,11 @@ export default function EventItem({eventName}: EventItemProps) {
 
     // test timer
     const Timer = () => {
-        const [seconds, setSeconds] = usePersistState(0, "seconds" );
-        const [minutes, setMinutes] = usePersistState(0, "minutes" );
-        const [hours, setHours] = usePersistState(0, "hours" );
+        const [seconds, setSeconds] = usePersistState(0, "seconds");
+        const [minutes, setMinutes] = usePersistState(0, "minutes");
+        const [hours, setHours] = usePersistState(0, "hours");
         const [isActive, setIsActive] = usePersistState(false, "isActive");
-        const [timerStartMoment, setTimerStartMoment] = usePersistState(0, "timerStartMoment" );
+        const [timerStartMoment, setTimerStartMoment] = usePersistState(0, "timerStartMoment");
         const [timerStopMoment, setTimerStopMoment] = usePersistState(0, "timerStopMoment")
 
         // functions to toggle, reset, and save the timer
@@ -32,6 +33,7 @@ export default function EventItem({eventName}: EventItemProps) {
             let currentDateTime = new Date()
             setTimerStartMoment(currentDateTime)
         }
+
         // clear out the timer if the user does not want to save
         function reset() {
             setSeconds(0);
@@ -39,6 +41,7 @@ export default function EventItem({eventName}: EventItemProps) {
             setTimerStartMoment(null)
             setTimerStopMoment(null);
         }
+
         // save the end point of the timer
         // we need to only make it clickable when the timer has been started again
         // saving should also clear out all the past values
@@ -57,8 +60,8 @@ export default function EventItem({eventName}: EventItemProps) {
             if (isActive) {
                 interval = setInterval(() => {
                     setSeconds((seconds: number) => seconds + 1)
-                    setMinutes((minutes: number) => ((seconds+1)/60) | 0) // uhhh don't know how to do this haha
-                    setHours((hours: number) => (minutes/60) | 0) // uhhh don't know how to do this haha
+                    setMinutes((minutes: number) => ((seconds + 1) / 60) | 0) // uhhh don't know how to do this haha
+                    setHours((hours: number) => (minutes / 60) | 0) // uhhh don't know how to do this haha
                     ;
                 }, 1000);
             } else if (!isActive && seconds !== 0) {
@@ -92,24 +95,31 @@ export default function EventItem({eventName}: EventItemProps) {
                                 {/*figure out how to store minutes and hours in the right way, then show*/}
                             </div>
                             <div className="row">
-                                <button className={`button button-primary button-primary-${isActive ? 'active' : 'inactive'}`} onClick={toggle}>
-                                    {isActive ? 'Pause' : 'Start'}
-                                    <IconButton>
-                                        <PlayArrowIcon/>
-                                    </IconButton>
-                                </button>
-                                <button className="button" onClick={reset}>
-                                    Clear
-                                    <IconButton>
-                                        <ClearIcon/>
-                                    </IconButton>
-                                </button>
-                                <button className="button" onClick={saveTimer}>
-                                    Save
-                                    <IconButton>
-                                        <CheckIcon/>
-                                    </IconButton>
-                                </button>
+                                {timerStopMoment == null &&
+                                    <button
+                                        className={`button button-primary button-primary-${isActive ? 'active' : 'inactive'}`}
+                                        onClick={toggle}>
+                                        <IconButton>
+                                            {isActive ? <StopIcon/> : <PlayArrowIcon/>}
+                                        </IconButton>
+                                    </button>
+                                }
+
+                                {timerStopMoment != null &&
+                                    <button className="button" onClick={reset}>
+                                        <IconButton>
+                                            <ClearIcon/>
+                                        </IconButton>
+                                    </button>
+                                }
+
+                                {timerStopMoment != null &&
+                                    <button className="button" onClick={saveTimer}>
+                                        <IconButton>
+                                            <CheckIcon/>
+                                        </IconButton>
+                                    </button>
+                                }
                             </div>
                         </div>
                     </Button>
