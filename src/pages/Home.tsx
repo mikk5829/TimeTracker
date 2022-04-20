@@ -6,6 +6,7 @@ import SettingsIcon from '@mui/icons-material/Settings';
 import {Actions, Category, Event, usePersistReducer} from "../service/data";
 import {useSnackbar} from "notistack";
 import CategoryItem from "../components/CategoryItem";
+import EventItem from "../components/EventItem";
 
 export default function Home() {
     const {enqueueSnackbar} = useSnackbar();
@@ -66,7 +67,8 @@ export default function Home() {
                 >
                     <Typography variant={"h3"}>Event history</Typography>
                     {events?.map((event: Event) => {
-                        return <Typography>{event.id} + {categoryNames[event.categoryId]}</Typography> // stack all the user's specified categories
+                        return <EventItem event={event} eventName={categoryNames[event.categoryId]}/>
+                        // <Typography>{event.id} + {categoryNames[event.categoryId]}</Typography> // stack all the user's specified categories
                     })}
                 </Stack>
             </Stack>
