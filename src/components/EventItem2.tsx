@@ -17,12 +17,12 @@ export default function EventItem2({category, onStartTimer, onStopTimer}: EventI
                 justifyContent="space-between"
                 alignItems="center"
                 spacing={2}>
-                {category.currentEvent !== null &&
+                {category.currentEvent !== undefined &&
                     <Typography color={"secondary"}><Moment interval={100} date={category.currentEvent.startTime}
                                                             format="h:mm:ss"
                                                             durationFromNow/></Typography>
                 }
-                {category.currentEvent !== null ?
+                {category.currentEvent !== undefined ?
                     <Button variant={'contained'} color={'secondary'} onClick={onStopTimer}>
                         Stop timer
                     </Button> : <Button variant={'contained'} color={'secondary'} onClick={onStartTimer}>

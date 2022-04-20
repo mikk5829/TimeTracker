@@ -3,7 +3,7 @@ import {useEffect, useState} from 'react';
 import {Button, Dialog, DialogActions, DialogTitle, IconButton, Stack, TextField, Typography} from "@mui/material";
 import AddIcon from '@mui/icons-material/Add';
 import SettingsIcon from '@mui/icons-material/Settings';
-import {Actions, Category, usePersistReducer} from "../service/data";
+import {Actions, Category, Event, usePersistReducer} from "../service/data";
 import {useSnackbar} from "notistack";
 import EventItem2 from "../components/EventItem2";
 
@@ -47,9 +47,6 @@ export default function Home() {
 
                     {/*Show one row per category that the user has added*/}
                 </Stack>
-                {/*{categories?.map((cat: Category) => {*/}
-                {/*    return <EventItem eventName={cat.name}/> // stack all the user's specified categories*/}
-                {/*})}*/}
                 {categories?.map((cat: Category) => {
                     return <EventItem2 key={cat.id} category={cat}
                                        onStartTimer={() => dispatch({type: Actions.AddEvent, id: cat.id})}
@@ -62,13 +59,15 @@ export default function Home() {
 
             <Stack>
                 <Stack
-                    direction="row"
+                    direction="column"
                     justifyContent="space-between"
                     alignItems="center"
                     spacing={0}
                 >
                     <Typography variant={"h3"}>Event history</Typography>
-
+                    {events?.map((event: Event) => {
+                        return <Typography>{event.id}</Typography> // stack all the user's specified categories
+                    })}
                 </Stack>
             </Stack>
 

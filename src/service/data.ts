@@ -2,15 +2,27 @@ import {v4 as uuid} from "uuid"
 import {useLocalStorage} from 'react-use'
 import {useCallback, useReducer} from "react";
 
+class State {
+    categories: Category[]
+    events: Event[]
+    error: string | boolean
+
+    public constructor(input: Partial<State> = {}) {
+        this.categories = input.categories?.map((cat) => new Category(cat)) ?? []
+        this.events = input.events?.map((event) => new Event(event)) ?? []
+        this.error = input.error ?? false
+    }
+}
+
 export class Event {
     id: string;
     categoryId: string;
     startTime: Date = new Date();
     endTime: Date | undefined;
 
-    constructor(categoryId: string) {
-        this.id = uuid()
-        this.categoryId = categoryId
+    public constructor(input: Partial<Event> = {}) {
+        this.id = input.id ?? uuid()
+        Object.assign(this, input);
     }
 
     endEvent(endTime: Date) {
@@ -23,20 +35,23 @@ export class Category {
     id: string;
     name: string;
     active: boolean = true;
-    currentEvent: Event | null = null;
+    currentEvent?: Event = undefined;
 
-    constructor(name: string) {
-        this.id = uuid()
-        this.name = name
+    public constructor(input: Partial<Category> = {}) {
+        if (input.name === null || input.name === undefined) throw new Error("Category have no name")
+        this.id = input.id ?? uuid();
+        this.name = input.name
+        this.active = input.active ?? true
+        this.currentEvent = input.currentEvent === undefined ? undefined : new Event(input.currentEvent)
     }
 
     endCurrentEvent() {
         console.log("ending");
         if (this.currentEvent) {
             this.currentEvent.endEvent(new Date())
-            this.currentEvent = null
+            this.currentEvent = undefined
         } else throw new Error("No current event")
-    }
+    };
 
     rename(name: string) {
         this.name = name
@@ -44,12 +59,6 @@ export class Category {
 }
 
 const LOCAL_STORAGE_KEY = "data-key-local-storage"
-
-class State {
-    categories: Category[] | undefined
-    events: Event[] | undefined
-    error: string | boolean | undefined
-}
 
 export const initialState: State = {
     categories: [],
@@ -72,7 +81,7 @@ export const reducer = (state, action) => {
             state.error = `Category with name ${action.name} already exists`
             return state;
         }
-        const cat = new Category(action.name)
+        const cat = new Category({name: action.name})
         return {
             ...state,
             categories: [...state.categories, cat]
@@ -86,19 +95,17 @@ export const reducer = (state, action) => {
             state.error = `Category with id ${action.id} could not be found`
             return state;
         }
-        category.currentEvent = new Event(action.id)
+        category.currentEvent = new Event({categoryId: action.id})
         return state
     }
 
     function stopEvent() {
         console.log("stop");
-        console.log(action.id);
-        let category: Category = state.categories.find((cat: { id: any; }) => cat.id === action.id)
+        let category = state.categories.find((cat: { id: any; }) => cat.id === action.id) as Category
         if (category === undefined) {
             state.error = `Category with id ${action.id} could not be found`
             return state;
         }
-        console.log(category);
         const event = category.currentEvent
         category.endCurrentEvent()
         return {
@@ -140,7 +147,11 @@ export const reducer = (state, action) => {
 export const usePersistReducer = () => {
     const [savedState, saveState] = useLocalStorage(
         LOCAL_STORAGE_KEY,
-        initialState,
+        initialState, {
+            raw: false,
+            serializer: (value: State) => JSON.stringify(value),
+            deserializer: (value: string) => new State(JSON.parse(value))
+        }
     )
 
     const reducerLocalStorage = useCallback(
