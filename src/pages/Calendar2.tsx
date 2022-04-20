@@ -181,7 +181,7 @@ export default function Calendar() {
                                 <TimelineDot color="primary"/>
                                 <TimelineConnector />
                             </TimelineSeparator>
-                            <TimelineContent>Walking to 358</TimelineContent>
+                            <TimelineContent>Reading</TimelineContent>
                         </TimelineItem>
                         <TimelineItem>
                             <TimelineOppositeContent color="text.secondary">
@@ -191,7 +191,7 @@ export default function Calendar() {
                                 <TimelineDot color="secondary" />
                                 <TimelineConnector />
                             </TimelineSeparator>
-                            <TimelineContent>Failing at learning typescript</TimelineContent>
+                            <TimelineContent>Studying</TimelineContent>
                         </TimelineItem>
                         <TimelineItem>
                             <TimelineOppositeContent color="text.secondary">
