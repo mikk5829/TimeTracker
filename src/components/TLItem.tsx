@@ -1,6 +1,6 @@
 import * as React from 'react';
 import {Button, IconButton, Stack, TextField, Typography} from "@mui/material";
-import {Event, Category} from "../service/data";
+import {Event} from "../service/data";
 import Moment from "react-moment";
 import Timeline from "@mui/lab/Timeline";
 import TimelineItem from "@mui/lab/TimelineItem";
@@ -9,10 +9,11 @@ import TimelineSeparator from "@mui/lab/TimelineSeparator";
 import TimelineConnector from "@mui/lab/TimelineConnector";
 import TimelineDot from "@mui/lab/TimelineDot";
 import TimelineContent from "@mui/lab/TimelineContent";
+// import CategoryItem from "../components/CategoryItem";
 
-type TLItemProps = { event: Event} // , category: Category }
+type TLItemProps = { event: Event, eventName: string} // , category: Category }
 
-export default function TLItem({event}: TLItemProps) {
+export default function TLItem({event, eventName}: TLItemProps) {
 
     return (
 
@@ -37,7 +38,7 @@ export default function TLItem({event}: TLItemProps) {
                     </TimelineSeparator>
                     <TimelineContent sx={{py: '12px', px: 2}}>
                         <Typography variant="h3" component="span">
-                            {event.categoryId}
+                            {eventName}
                         </Typography>
                         <Typography>
                             <Moment duration={event.startTime}
