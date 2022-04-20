@@ -1,10 +1,17 @@
 import * as React from 'react';
 import {Typography} from "@mui/material";
 import ReactApexChart from "react-apexcharts";
+import {usePersistReducer, Event} from "../service/data";
+import moment from "moment";
+
 
 // code example for choosing from day, week, month views https://codesandbox.io/s/react-apex-charts-m9tww?file=/src/index.js
 
 export default function Trends() {
+
+    const [{categories, events, error}, dispatch] = usePersistReducer() // useReducer(reducer, initialState);
+
+
     const state = {
         options: {
             chart: {
@@ -32,10 +39,10 @@ export default function Trends() {
             title: {
                 text: 'Title of chart',
                 style: {
-                    fontSize:  '16px',
-                    fontWeight:  'bold',
-                    fontFamily:  undefined,
-                    color:  'black'
+                    fontSize: '16px',
+                    fontWeight: 'bold',
+                    fontFamily: undefined,
+                    color: 'black'
                 }
             }
             // ,
@@ -66,13 +73,38 @@ export default function Trends() {
         ]
     };
 
+    let barSeries: { name: string, type: string, data: number[]}[] = [];
+
+    events.forEach((event: Event) => {
+
+        let id = event.id;
+        var duration = moment.duration(moment(event.endTime).diff(event.startTime));
+        var minutes = duration.asMinutes();
+
+
+
+        var match = barSeries.find(x => x.name == id);
+
+        if (match == undefined) {
+            let minutesArr: number[] = [minutes]
+            barSeries.push({
+                data: minutes,
+                name: id,
+                type: "column"
+            });
+        } else {
+            match.data.push(minutes);
+        }
+        console.log(barSeries);
+    });
+
     return (
         <div>
             <Typography variant={"h1"}>Trends</Typography>
 
             <ReactApexChart
                 options={state.options}
-                series={state.series}
+                series={barSeries}
                 type="bar"
                 height="350"
                 width="100%"
@@ -83,7 +115,7 @@ export default function Trends() {
                 series={state.series}
                 width="100%"
                 height="350"
-                />
+            />
             <ReactApexChart
                 type="area"
                 options={state.options}
