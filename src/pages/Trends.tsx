@@ -2,6 +2,7 @@ import * as React from 'react';
 import {Typography} from "@mui/material";
 import ReactApexChart from "react-apexcharts";
 
+
 // code example for choosing from day, week, month views https://codesandbox.io/s/react-apex-charts-m9tww?file=/src/index.js
 
 export default function Trends() {
@@ -68,8 +69,8 @@ export default function Trends() {
 
     return (
         <div>
-            <Typography variant={"h1"}>Trends</Typography>
-
+            <Typography variant={"h1"}>Summary</Typography>
+            <Typography variant={"h1"}>Details (?)</Typography>
             <ReactApexChart
                 options={state.options}
                 series={state.series}

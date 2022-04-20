@@ -31,8 +31,7 @@ export default function Calendar() {
 
     return (
         <div>
-        <Typography variant={"h2"}>Calendar 1</Typography>
-            {/*COMMENT OUT DATE CONTROL FOR NOW*/}
+        <Typography variant={"h2"}>Calendar 2</Typography>
             {/*<LocalizationProvider dateAdapter={AdapterDateFns}>*/}
             {/*    <DatePicker*/}
             {/*        label="Select date"*/}
@@ -43,76 +42,79 @@ export default function Calendar() {
             {/*        renderInput={(params) => <TextField {...params} />}*/}
             {/*    />*/}
             {/*</LocalizationProvider>*/}
-        <Stack>
-            <Typography variant={"h3"} align ={"center"}>19 April</Typography>
-            {/*<Stack>*/}
-            {/*    {categories?.map((cat: Category) => {*/}
-            {/*        return<Typography>Category: {cat.name}*/}
-            {/*             ID: {cat.ID}</Typography> // stack all the user's specified categories*/}
-            {/*    })}*/}
-            {/*</Stack>*/}
+        {/*<Stack>*/}
+        {/*    <Typography variant={"h3"} align ={"center"}>Tue 19 April</Typography>*/}
+        {/*    /!*<Stack>*!/*/}
+        {/*    /!*    {categories?.map((cat: Category) => {*!/*/}
+        {/*    /!*        return<Typography>Category: {cat.name}*!/*/}
+        {/*    /!*             ID: {cat.ID}</Typography> // stack all the user's specified categories*!/*/}
+        {/*    /!*    })}*!/*/}
+        {/*    </Stack>*/}
 
-    <React.Fragment>
-        <Timeline position="alternate">
-            <TimelineItem>
-                <TimelineOppositeContent color="text.secondary">
-                    09:30 am
-                </TimelineOppositeContent>
-                <TimelineSeparator>
-                    <TimelineDot color="secondary"/>
-                    <TimelineConnector />
-                </TimelineSeparator>
-                <TimelineContent>Reading</TimelineContent>
-            </TimelineItem>
-            <TimelineItem>
-                <TimelineOppositeContent color="text.secondary">
-                    10:00 am
-                </TimelineOppositeContent>
-                <TimelineSeparator>
-                    <TimelineDot color="primary"/>
-                    <TimelineConnector />
-                </TimelineSeparator>
-                <TimelineContent>Studying</TimelineContent>
-            </TimelineItem>
-            <TimelineItem>
-                <TimelineOppositeContent color="text.secondary">
-                    12:00 pm
-                </TimelineOppositeContent>
-                <TimelineSeparator>
-                    <TimelineDot  color="secondary" />
-                    <TimelineConnector />
-                </TimelineSeparator>
-                <TimelineContent>Exercise</TimelineContent>
-            </TimelineItem>
-            <TimelineItem>
-                <TimelineOppositeContent color="text.secondary">
-                    5:00 pm
-                </TimelineOppositeContent>
-                <TimelineSeparator>
-                    <TimelineDot color="primary" />
-                    <TimelineConnector />
-                </TimelineSeparator>
-                <TimelineContent>Reading</TimelineContent>
-            </TimelineItem>
-            <TimelineItem>
-                <TimelineOppositeContent color="text.secondary">
-                    8:00 pm
-                </TimelineOppositeContent>
-                <TimelineSeparator>
-                    <TimelineDot color="primary" />
-                    <TimelineConnector />
-                </TimelineSeparator>
-                <TimelineContent>Cleaning</TimelineContent>
-            </TimelineItem>
-        </Timeline>
-    </React.Fragment>
-        </Stack>
 
-        {/*yesterday*/}
             <Stack>
-                <Typography variant={"h3"} align ={"center"}>18 April</Typography>
+                <Typography variant={"h3"} align ={"center"}>Tue 19 April</Typography>
                 <React.Fragment>
-                    <Timeline position="alternate">
+                    <Timeline position="right">
+                        <TimelineItem>
+                            <TimelineOppositeContent color="text.secondary">
+                                09:30 am
+                            </TimelineOppositeContent>
+                            <TimelineSeparator>
+                                <TimelineDot color="secondary"/>
+                                <TimelineConnector />
+                            </TimelineSeparator>
+                            <TimelineContent>Reading</TimelineContent>
+                        </TimelineItem>
+                        <TimelineItem>
+                            <TimelineOppositeContent color="text.secondary">
+                                10:00 am
+                            </TimelineOppositeContent>
+                            <TimelineSeparator>
+                                <TimelineDot color="primary"/>
+                                <TimelineConnector />
+                            </TimelineSeparator>
+                            <TimelineContent>Napping</TimelineContent>
+                        </TimelineItem>
+                        <TimelineItem>
+                            <TimelineOppositeContent color="text.secondary">
+                                12:00 pm
+                            </TimelineOppositeContent>
+                            <TimelineSeparator>
+                                <TimelineDot  color="secondary" />
+                                <TimelineConnector />
+                            </TimelineSeparator>
+                            <TimelineContent>Exercise</TimelineContent>
+                        </TimelineItem>
+                        <TimelineItem>
+                            <TimelineOppositeContent color="text.secondary">
+                                5:00 pm
+                            </TimelineOppositeContent>
+                            <TimelineSeparator>
+                                <TimelineDot color="primary" />
+                                <TimelineConnector />
+                            </TimelineSeparator>
+                            <TimelineContent>Reading</TimelineContent>
+                        </TimelineItem>
+                        <TimelineItem>
+                            <TimelineOppositeContent color="text.secondary">
+                                8:00 pm
+                            </TimelineOppositeContent>
+                            <TimelineSeparator>
+                                <TimelineDot color="primary" />
+                                <TimelineConnector />
+                            </TimelineSeparator>
+                            <TimelineContent>Cleaning</TimelineContent>
+                        </TimelineItem>
+                    </Timeline>
+                </React.Fragment>
+            </Stack>
+
+            {/*yesterday*/}
+            <Stack>
+                <Typography variant={"h3"} align ={"center"}>Mon 18 April</Typography>
+                <React.Fragment>
+                    <Timeline position="right">
                         <TimelineItem>
                             <TimelineOppositeContent color="text.secondary">
                                 08:45 am
@@ -158,9 +160,9 @@ export default function Calendar() {
             </Stack>
 
             <Stack>
-                <Typography variant={"h3"} align ={"center"}>17 April</Typography>
+                <Typography variant={"h3"} align ={"center"}>Sun 17 April</Typography>
                 <React.Fragment>
-                    <Timeline position="alternate">
+                    <Timeline position="right">
                         <TimelineItem>
                             <TimelineOppositeContent color="text.secondary">
                                 10:30 am
@@ -206,9 +208,9 @@ export default function Calendar() {
             </Stack>
 
             <Stack>
-                <Typography variant={"h3"} align ={"center"}>16 April</Typography>
+                <Typography variant={"h3"} align ={"center"}>Sat 16 April</Typography>
                 <React.Fragment>
-                    <Timeline position="alternate">
+                    <Timeline position="right">
                         <TimelineItem>
                             <TimelineOppositeContent color="text.secondary">
                                 08:00 am
@@ -254,9 +256,9 @@ export default function Calendar() {
             </Stack>
 
             <Stack>
-                <Typography variant={"h3"} align ={"center"}>15 April</Typography>
+                <Typography variant={"h3"} align ={"center"}>Fri 15 April</Typography>
                 <React.Fragment>
-                    <Timeline position="alternate">
+                    <Timeline position="right">
                         <TimelineItem>
                             <TimelineOppositeContent color="text.secondary">
                                 09:30 am
@@ -302,9 +304,9 @@ export default function Calendar() {
             </Stack>
 
             <Stack>
-                <Typography variant={"h3"} align ={"center"}>14 April</Typography>
+                <Typography variant={"h3"} align ={"center"}>Thu 14 April</Typography>
                 <React.Fragment>
-                    <Timeline position="alternate">
+                    <Timeline position="right">
                         <TimelineItem>
                             <TimelineOppositeContent color="text.secondary">
                                 07:30 am
@@ -350,9 +352,9 @@ export default function Calendar() {
             </Stack>
 
             <Stack>
-                <Typography variant={"h3"} align ={"center"}>13 April</Typography>
+                <Typography variant={"h3"} align ={"center"}>Wed 13 April</Typography>
                 <React.Fragment>
-                    <Timeline position="alternate">
+                    <Timeline position="right">
                         <TimelineItem>
                             <TimelineOppositeContent color="text.secondary">
                                 09:30 am

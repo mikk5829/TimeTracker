@@ -23,7 +23,7 @@ export class Category {
     }
 }
 
-const LOCAL_STORAGE_KEY = "data-key-local-storate"
+const LOCAL_STORAGE_KEY = "data-key-local-storage"
 
 class State {
     categories: Category[] | undefined
