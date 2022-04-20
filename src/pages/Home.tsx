@@ -3,9 +3,9 @@ import {useEffect, useState} from 'react';
 import {Button, Dialog, DialogActions, DialogTitle, IconButton, Stack, TextField, Typography} from "@mui/material";
 import AddIcon from '@mui/icons-material/Add';
 import SettingsIcon from '@mui/icons-material/Settings';
-import EventItem from "../components/EventItem";
-import {Category, usePersistReducer} from "../service/data";
+import {Actions, Category, usePersistReducer} from "../service/data";
 import {useSnackbar} from "notistack";
+import EventItem2 from "../components/EventItem2";
 
 export default function Home() {
     const {enqueueSnackbar, closeSnackbar} = useSnackbar();
@@ -18,7 +18,7 @@ export default function Home() {
     useEffect(() => {
         if (error) {
             enqueueSnackbar(error, {variant: "error"})
-            dispatch({type: "dismissError"})
+            dispatch({type: Actions.DismissError})
         }
     }, [error])
 
@@ -33,7 +33,7 @@ export default function Home() {
                     spacing={0}
                 >
                     {/*Add buttons for settings and adding a category*/}
-                    <Typography variant={"h2"}>Add Events</Typography>
+                    <Typography variant={"h3"}>Add Events</Typography>
                     <Stack direction="row">
                         <IconButton aria-label="settings" color="primary"
                                     onClick={() => setOpenAddCategoryDialog(true)}>
@@ -47,9 +47,29 @@ export default function Home() {
 
                     {/*Show one row per category that the user has added*/}
                 </Stack>
+                {/*{categories?.map((cat: Category) => {*/}
+                {/*    return <EventItem eventName={cat.name}/> // stack all the user's specified categories*/}
+                {/*})}*/}
                 {categories?.map((cat: Category) => {
-                    return <EventItem eventName={cat.name}/> // stack all the user's specified categories
+                    return <EventItem2 key={cat.id} category={cat}
+                                       onStartTimer={() => dispatch({type: Actions.AddEvent, id: cat.id})}
+                                       onStopTimer={() => {
+                                           console.log("hall");
+                                           dispatch({type: Actions.StopEvent, id: cat.id})
+                                       }}/> // stack all the user's specified categories
                 })}
+            </Stack>
+
+            <Stack>
+                <Stack
+                    direction="row"
+                    justifyContent="space-between"
+                    alignItems="center"
+                    spacing={0}
+                >
+                    <Typography variant={"h3"}>Event history</Typography>
+
+                </Stack>
             </Stack>
 
             {/*Workflow to add a new category*/}
@@ -66,9 +86,7 @@ export default function Home() {
                         Cancel
                     </Button>
                     <Button variant="contained" color="secondary" onClick={() => {
-                        dispatch({type: "addCategory", name: addCategoryText})
-
-                        // AddCategory(addCategoryText) // add whatever the user typed to the category list
+                        dispatch({type: Actions.AddCategory, name: addCategoryText}) // add whatever the user typed to the category list
                         setAddCategoryText("") // clear it out afterwards
                         setOpenAddCategoryDialog(false) // close the dialog
                     }}>

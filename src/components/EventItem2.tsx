@@ -1,0 +1,34 @@
+import {Button, Stack, Typography} from "@mui/material";
+import * as React from 'react';
+import {Category} from "../service/data";
+import Moment from "react-moment";
+
+type EventItemProps = { category: Category, onStartTimer: any, onStopTimer: any }
+
+export default function EventItem2({category, onStartTimer, onStopTimer}: EventItemProps) {
+    return (
+        <Stack direction="row"
+               justifyContent="space-between"
+               alignItems="center"
+               spacing={0}>
+            <Typography>{category.name}</Typography>
+            <Stack
+                direction="row"
+                justifyContent="space-between"
+                alignItems="center"
+                spacing={2}>
+                {category.currentEvent !== null &&
+                    <Typography color={"secondary"}><Moment interval={100} date={category.currentEvent.startTime}
+                                                            format="h:mm:ss"
+                                                            durationFromNow/></Typography>
+                }
+                {category.currentEvent !== null ?
+                    <Button variant={'contained'} color={'secondary'} onClick={onStopTimer}>
+                        Stop timer
+                    </Button> : <Button variant={'contained'} color={'secondary'} onClick={onStartTimer}>
+                        Start timer
+                    </Button>}
+            </Stack>
+        </Stack>
+    )
+}
