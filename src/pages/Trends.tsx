@@ -88,7 +88,7 @@ export default function Trends() {
         if (match == undefined) {
             let minutesArr: number[] = [minutes]
             barSeries.push({
-                data: minutes,
+                data: minutesArr,
                 name: id,
                 type: "column"
             });
