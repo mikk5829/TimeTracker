@@ -1,7 +1,7 @@
 import * as React from 'react';
 import {Typography} from "@mui/material";
 import ReactApexChart from "react-apexcharts";
-import {usePersistReducer, Event} from "../service/data";
+import {usePersistReducer, Event, Category} from "../service/data";
 import moment from "moment";
 
 
@@ -11,8 +11,42 @@ export default function Trends() {
 
     const [{categories, events, error}, dispatch] = usePersistReducer() // useReducer(reducer, initialState);
 
+    let totalSeries: { name: string, type: string, data: number[] }[] = [{name: "abc", type: "column", data: []}];
+    let totalXLabels: string[] = [];
 
-    const state = {
+    let idxs: {id: string, index: number}[] = [];
+    let i = 0;
+
+    events.forEach((event: Event) => {
+
+        let id = event.categoryId;
+
+        totalXLabels.push(event.categoryId);
+
+        var duration = moment.duration(moment(event.endTime).diff(event.startTime));
+        var hours = duration.asHours();
+
+
+        var match_index = idxs.find(x => x.id == id);
+
+        var idx = -1;
+
+        if (match_index == undefined) {
+            idxs.push({
+                id: id,
+                index: i
+            });
+            totalSeries[0].data.push(hours);
+            i++;
+        } else {
+            idx = match_index.index;
+            totalSeries[0].data[idx] += hours;
+        }
+    });
+
+    console.log(totalSeries);
+
+    const stateTotalTime = {
         options: {
             chart: {
                 id: "basic-bar"
@@ -26,9 +60,9 @@ export default function Trends() {
                 enabled: false
             },
             xaxis: {
-                categories: ["January", "February", "March", "April", "May", "June", "July", "August", "September"],
+                categories: totalXLabels,
                 title: {
-                    text: "Month"
+                    text: "Category"
                 }
             },
             yaxis: {
@@ -37,7 +71,7 @@ export default function Trends() {
                 }
             },
             title: {
-                text: 'Title of chart',
+                text: 'Total time logged per category',
                 style: {
                     fontSize: '16px',
                     fontWeight: 'bold',
@@ -45,81 +79,33 @@ export default function Trends() {
                     color: 'black'
                 }
             }
-            // ,
-            // theme: {
-            //     mode: 'light',
-            //     palette: 'palette1',
-            //
-            // }
-
         },
-        series: [
-            {
-                name: "Reading",
-                data: [30, 40, 45, 50, 49, 60, 70, 91],
-
-            },
-            {
-                name: "Studying",
-                type: "column",
-                data: [23, 12, 54, 61, 32, 56, 81, 19]
-            }
-            ,
-            {
-                name: "Exercise",
-                type: "column",
-                data: [4, 32, 12, 41, 18, 81, 73, 43]
-            }
-        ]
+        series: totalSeries
     };
-
-    let barSeries: { name: string, type: string, data: number[]}[] = [];
-
-    events.forEach((event: Event) => {
-
-        let id = event.id;
-        var duration = moment.duration(moment(event.endTime).diff(event.startTime));
-        var minutes = duration.asMinutes();
-
-
-
-        var match = barSeries.find(x => x.name == id);
-
-        if (match == undefined) {
-            let minutesArr: number[] = [minutes]
-            barSeries.push({
-                data: minutesArr,
-                name: id,
-                type: "column"
-            });
-        } else {
-            match.data.push(minutes);
-        }
-        console.log(barSeries);
-    });
 
     return (
         <div>
             <Typography variant={"h1"}>Trends</Typography>
 
             <ReactApexChart
-                options={state.options}
-                series={barSeries}
+                options={stateTotalTime.options}
+                series={stateTotalTime.series}
                 type="bar"
                 height="350"
                 width="100%"
             />
+
             <ReactApexChart
                 type="line"
-                options={state.options}
-                series={state.series}
+                options={stateTotalTime.options}
+                series={stateTotalTime.series}
                 width="100%"
                 height="350"
             />
             <ReactApexChart
                 type="area"
-                options={state.options}
-                series={state.series}
+                options={stateTotalTime.options}
+                series={stateTotalTime.series}
                 width="100%"
                 height="350"
             />
