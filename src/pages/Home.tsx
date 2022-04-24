@@ -5,11 +5,12 @@ import AddIcon from '@mui/icons-material/Add';
 import SettingsIcon from '@mui/icons-material/Settings';
 import {Actions, Category, Event, usePersistReducer} from "../service/data";
 import {useSnackbar} from "notistack";
-import EventItem2 from "../components/EventItem2";
+import CategoryItem from "../components/CategoryItem";
+import EventItem from "../components/EventItem";
 
 export default function Home() {
-    const {enqueueSnackbar, closeSnackbar} = useSnackbar();
-    const [{categories, events, error}, dispatch] = usePersistReducer() // useReducer(reducer, initialState);
+    const {enqueueSnackbar} = useSnackbar();
+    const [{categories, categoryNames, events, error}, dispatch] = usePersistReducer() // useReducer(reducer, initialState);
 
     const [openAddCategoryDialog, setOpenAddCategoryDialog] = useState(false) // open dialog to add categories
 
@@ -48,12 +49,12 @@ export default function Home() {
                     {/*Show one row per category that the user has added*/}
                 </Stack>
                 {categories?.map((cat: Category) => {
-                    return <EventItem2 key={cat.id} category={cat}
-                                       onStartTimer={() => dispatch({type: Actions.AddEvent, id: cat.id})}
-                                       onStopTimer={() => {
-                                           console.log("hall");
-                                           dispatch({type: Actions.StopEvent, id: cat.id})
-                                       }}/> // stack all the user's specified categories
+                    return <CategoryItem key={cat.id} category={cat}
+                                         onStartTimer={() => dispatch({type: Actions.AddEvent, id: cat.id})}
+                                         onStopTimer={() => {
+                                             console.log("hall");
+                                             dispatch({type: Actions.StopEvent, id: cat.id})
+                                         }}/> // stack all the user's specified categories
                 })}
             </Stack>
 
@@ -66,7 +67,8 @@ export default function Home() {
                 >
                     <Typography variant={"h3"}>Event history</Typography>
                     {events?.map((event: Event) => {
-                        return <Typography>{event.id}</Typography> // stack all the user's specified categories
+                        return <EventItem event={event} eventName={categoryNames[event.categoryId]}/>
+                        // <Typography>{event.id} + {categoryNames[event.categoryId]}</Typography> // stack all the user's specified categories
                     })}
                 </Stack>
             </Stack>

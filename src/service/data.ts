@@ -2,14 +2,20 @@ import {v4 as uuid} from "uuid"
 import {useLocalStorage} from 'react-use'
 import {useCallback, useReducer} from "react";
 
+interface CategoryNames {
+    [categoryId: string]: string;
+}
+
 class State {
     categories: Category[]
     events: Event[]
+    categoryNames: CategoryNames
     error: string | boolean
 
     public constructor(input: Partial<State> = {}) {
         this.categories = input.categories?.map((cat) => new Category(cat)) ?? []
         this.events = input.events?.map((event) => new Event(event)) ?? []
+        this.categoryNames = input.categoryNames ?? {}
         this.error = input.error ?? false
     }
 }
@@ -46,7 +52,6 @@ export class Category {
     }
 
     endCurrentEvent() {
-        console.log("ending");
         if (this.currentEvent) {
             this.currentEvent.endEvent(new Date())
             this.currentEvent = undefined
@@ -63,6 +68,7 @@ const LOCAL_STORAGE_KEY = "data-key-local-storage"
 export const initialState: State = {
     categories: [],
     events: [],
+    categoryNames: {},
     error: false
 }
 
@@ -71,7 +77,7 @@ export enum Actions {
     StopEvent = 'stopEvent',
     RenameCategory = 'renameCategory',
     DismissError = 'dismissError',
-    AddCategory = 'addCategory'
+    AddCategory = 'addCategory',
 }
 
 // @ts-ignore
@@ -89,7 +95,6 @@ export const reducer = (state, action) => {
     }
 
     function addEvent() {
-        console.log("add");
         let category: Category = state.categories.find((cat: { id: any; }) => cat.id === action.id)
         if (category === undefined) {
             state.error = `Category with id ${action.id} could not be found`
@@ -100,7 +105,6 @@ export const reducer = (state, action) => {
     }
 
     function stopEvent() {
-        console.log("stop");
         let category = state.categories.find((cat: { id: any; }) => cat.id === action.id) as Category
         if (category === undefined) {
             state.error = `Category with id ${action.id} could not be found`
@@ -153,6 +157,8 @@ export const usePersistReducer = () => {
             deserializer: (value: string) => new State(JSON.parse(value))
         }
     )
+
+    savedState?.categories.map(cat => savedState.categoryNames[cat.id] = cat.name)
 
     const reducerLocalStorage = useCallback(
         (state, action) => {

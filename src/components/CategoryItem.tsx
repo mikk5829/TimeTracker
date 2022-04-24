@@ -3,9 +3,9 @@ import * as React from 'react';
 import {Category} from "../service/data";
 import Moment from "react-moment";
 
-type EventItemProps = { category: Category, onStartTimer: any, onStopTimer: any }
+type CategoryItemProps = { category: Category, onStartTimer: any, onStopTimer: any }
 
-export default function EventItem2({category, onStartTimer, onStopTimer}: EventItemProps) {
+export default function CategoryItem({category, onStartTimer, onStopTimer}: CategoryItemProps) {
     return (
         <Stack direction="row"
                justifyContent="space-between"
