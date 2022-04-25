@@ -108,6 +108,11 @@ export default function Trends() {
             yaxis: {
                 title: {
                     text: "Hours"
+                },
+                labels: {
+                    formatter: function (num: number) {
+                        return num.toFixed(3)
+                    }
                 }
             },
             title: {
@@ -145,6 +150,11 @@ export default function Trends() {
             yaxis: {
                 title: {
                     text: "Hours"
+                },
+                labels: {
+                    formatter: function (num: number) {
+                        return num.toFixed(3)
+                    }
                 }
             },
             title: {
@@ -182,6 +192,11 @@ export default function Trends() {
             yaxis: {
                 title: {
                     text: "Hours"
+                },
+                labels: {
+                    formatter: function (num: number) {
+                        return num.toFixed(3)
+                    }
                 }
             },
             title: {
