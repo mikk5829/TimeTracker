@@ -23,18 +23,16 @@ export default function Trends() {
     let weeklyXLabels: string[] = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
     let weeklySeries: { name: string, data: number[] }[] = [];
 
-    let idxs: { id: string, index: number }[] = [];
+    let idxs: { name: string, index: number }[] = [];
     let i = 0;
-
     events.forEach((event: Event) => {
 
         let id = event.categoryId;
 
-        totalXLabels.push(categoryNames[id]);
         let startTime = moment(event.startTime);
         let endTime = moment(event.endTime);
 
-        let weekday = startTime.day();
+        let weekday = startTime.isoWeekday() - 1;
         let date = startTime.date(); // 1-based (first day of month = 1)
         let month = startTime.month(); // 0-based (jan=0, dec=11)
         let year = startTime.month();
@@ -43,18 +41,20 @@ export default function Trends() {
         var hours = duration.asHours();
 
 
-        var match_total = idxs.find(x => x.id == id);
-        var match_month = monthlySeries.find(x => x.name == id);
-        var match_week = weeklySeries.find(x => x.name == id);
+        var match_total = idxs.find(x => x.name == categoryNames[id]);
+        var match_month = monthlySeries.find(x => x.name == categoryNames[id]);
+        var match_week = weeklySeries.find(x => x.name == categoryNames[id]);
 
         var idx = -1;
 
         // For total time spent
         if (match_total == undefined) {
             idxs.push({
-                id: id,
+                name: categoryNames[id],
                 index: i
             });
+
+            totalXLabels.push(categoryNames[id]);
             totalSeries[0].data.push(hours);
             i++;
         } else {
@@ -66,7 +66,7 @@ export default function Trends() {
         if (match_month == undefined) {
             monthlySeries.push({
                 data: new Array(12).fill(0),
-                name: id
+                name: categoryNames[id]
             });
         } else {
             match_month.data[month] += hours;
@@ -76,7 +76,7 @@ export default function Trends() {
         if (match_week == undefined) {
             weeklySeries.push({
                 data: new Array(7).fill(0),
-                name: id
+                name: categoryNames[id]
             });
         } else {
             match_week.data[weekday] += hours;
