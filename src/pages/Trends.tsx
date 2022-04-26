@@ -9,7 +9,7 @@ import moment from "moment";
 
 export default function Trends() {
 
-    const [{categories, events, error}, dispatch] = usePersistReducer() // useReducer(reducer, initialState);
+    const [{categories, events, error, categoryNames}, dispatch] = usePersistReducer() // useReducer(reducer, initialState);
 
     // FOR STORING TOTAL HOURS SPENT
     let totalSeries: { name: string, data: number[] }[] = [{name: "abc", data: []}];
@@ -30,7 +30,7 @@ export default function Trends() {
 
         let id = event.categoryId;
 
-        totalXLabels.push(id);
+        totalXLabels.push(categoryNames[id]);
         let startTime = moment(event.startTime);
         let endTime = moment(event.endTime);
 
@@ -214,7 +214,7 @@ export default function Trends() {
 
     return (
         <div>
-            <Typography variant={"h1"}>Trends</Typography>
+            <Typography color={"secondary"} variant={"h4"}>Trends</Typography>
 
             <ReactApexChart
                 type="bar"

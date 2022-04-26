@@ -75,9 +75,11 @@ export const initialState: State = {
 export enum Actions {
     AddEvent = 'addEvent',
     StopEvent = 'stopEvent',
+    DeleteEvent = 'deleteEvent',
     RenameCategory = 'renameCategory',
     DismissError = 'dismissError',
     AddCategory = 'addCategory',
+    ToggleActiveCategory = 'toggleActiveCategory'
 }
 
 // @ts-ignore
@@ -131,6 +133,35 @@ export const reducer = (state, action) => {
         }
     }
 
+    function deleteEvent() {
+        if (!action.id) {
+            state.error = `Event id is missing in dispatch`
+            return state
+        }
+        return {
+            ...state,
+            events: state.events.filter((event: Event) => event.id !== action.id)
+        }
+    }
+
+    function toggleActiveCategory() {
+        if (!action.id) {
+            state.error = `Category id is missing in dispatch`
+            return state
+        }
+        let category = state.categories.find((cat: Category) => cat.id === action.id) as Category
+        if (category === undefined) {
+            state.error = `Category with id ${action.id} could not be found`
+            return state;
+        }
+        const active = !category.active
+        console.log(category.active)
+        category.active = active
+        console.log(category.active)
+
+        return state;
+    }
+
     switch (action.type) {
         case Actions.AddCategory:
             return addCategory();
@@ -143,6 +174,10 @@ export const reducer = (state, action) => {
             return addEvent();
         case Actions.StopEvent:
             return stopEvent();
+        case Actions.DeleteEvent:
+            return deleteEvent();
+        case Actions.ToggleActiveCategory:
+            return toggleActiveCategory();
         default:
             return state;
     }
@@ -158,11 +193,11 @@ export const usePersistReducer = () => {
         }
     )
 
-    savedState?.categories.map(cat => savedState.categoryNames[cat.id] = cat.name)
-
     const reducerLocalStorage = useCallback(
         (state, action) => {
             const newState = reducer(state, action)
+
+            newState?.categories.map((cat: { id: string | number; name: any; }) => newState.categoryNames[cat.id] = cat.name)
 
             saveState(newState)
 

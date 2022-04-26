@@ -1,17 +1,19 @@
 import {Button, Stack, Typography} from "@mui/material";
 import * as React from 'react';
-import {Category} from "../service/data";
+import {Actions, Category, usePersistReducer} from "../service/data";
 import Moment from "react-moment";
 
 type CategoryItemProps = { category: Category, onStartTimer: any, onStopTimer: any }
 
 export default function CategoryItem({category, onStartTimer, onStopTimer}: CategoryItemProps) {
+    const [{categories, categoryNames, events, error}, dispatch] = usePersistReducer()
+
     return (
         <Stack direction="row"
                justifyContent="space-between"
                alignItems="center"
                spacing={0}>
-            <Typography>{category.name}</Typography>
+            <Typography color={category.active ? 'secondary' : 'primary'}>{category.name}</Typography>
             <Stack
                 direction="row"
                 justifyContent="space-between"

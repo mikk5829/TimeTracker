@@ -14,7 +14,7 @@ import {useSnackbar} from "notistack";
 import CategoryItem from "../components/CategoryItem";
 import EventItem from "../components/EventItem";
 import Moment from "react-moment";
-import { styled } from '@mui/material/styles';
+import {styled} from '@mui/material/styles';
 
 export default function Home() {
     const {enqueueSnackbar} = useSnackbar();
@@ -23,7 +23,7 @@ export default function Home() {
     const [addCategoryText, setAddCategoryText] = useState("") // what the user types to add as a category
 
     // test table cell stuff
-    const StyledTableCell = styled(TableCell)(({ theme }) => ({
+    const StyledTableCell = styled(TableCell)(({theme}) => ({
         [`&.${tableCellClasses.head}`]: {
             backgroundColor: theme.palette.common.black,
             color: theme.palette.common.white,
@@ -33,7 +33,7 @@ export default function Home() {
         },
     }));
 
-    const StyledTableRow = styled(TableRow)(({ theme }) => ({
+    const StyledTableRow = styled(TableRow)(({theme}) => ({
         '&:nth-of-type(odd)': {
             backgroundColor: theme.palette.action.hover,
         },
@@ -53,7 +53,7 @@ export default function Home() {
 
     return (
         <div>
-            <Typography color={"primary"} variant={"h1"}>TimeTracker</Typography>
+            <Typography color={"secondary"} variant={"h4"}>TimeTracker</Typography>
             <Stack>
                 <Stack
                     direction="row"
@@ -62,7 +62,7 @@ export default function Home() {
                     spacing={0}
                 >
                     {/*Add buttons for settings and adding a category*/}
-                    <Typography color = {"secondary"} variant={"h4"}>Add Events</Typography>
+                    <Typography color={"primary"} variant={"h6"}>Add Events</Typography>
                     <Stack direction="row">
                         <IconButton aria-label="settings" color="primary"
                                     onClick={() => setOpenAddCategoryDialog(true)}>
@@ -77,12 +77,13 @@ export default function Home() {
                     {/*Show one row per category that the user has added*/}
                 </Stack>
                 {categories?.map((cat: Category) => {
-                    return <CategoryItem key={cat.id} category={cat}
-                                         onStartTimer={() => dispatch({type: Actions.AddEvent, id: cat.id})}
-                                         onStopTimer={() => {
-                                             console.log("hall");
-                                             dispatch({type: Actions.StopEvent, id: cat.id})
-                                         }}/> // stack all the user's specified categories
+                    return <div onClick={() => dispatch({type: Actions.ToggleActiveCategory, id: cat.id})}><CategoryItem
+                        key={cat.id} category={cat}
+                        onStartTimer={() => dispatch({type: Actions.AddEvent, id: cat.id})}
+                        onStopTimer={() => {
+                            console.log("hall");
+                            dispatch({type: Actions.StopEvent, id: cat.id})
+                        }}/></div> // stack all the user's specified categories
                 })}
             </Stack>
 
@@ -103,51 +104,54 @@ export default function Home() {
             {/*</Stack>*/}
 
             {/*Use a table to show event history*/}
-            <Typography color = {"secondary"}  variant={"h4"}>Event history</Typography>
+            <Typography color={"primary"} variant={"h6"}>Event history</Typography>
             <TableContainer component={Paper}>
-            <Table stickyHeader aria-label="customized table"
-                   sx={{ minWidth: 200 }} size="small"
-                  >
-            <TableHead>
-            <TableRow>
-            <TableCell><Typography color={"primary"} variant={"h3"}>Start time</Typography></TableCell>
-            <TableCell align="left"><Typography color={"primary"} variant={"h3"}>Event</Typography></TableCell>
-            <TableCell align="left"><Typography color={"primary"} variant={"h3"}>Duration</Typography></TableCell>
-                <TableCell width = "10" align="left"><Typography color={"primary"} variant={"h3"}>Edit</Typography></TableCell>
-            </TableRow>
-            </TableHead>
-            <TableBody>
-        {events?.map((event: Event) => (
-            <StyledTableRow
-            key={event.id}
-            sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-            >
-            <StyledTableCell component="th" scope="row" align="left">
-                <Typography color={"primary"}>
-                    <Moment date = {event.startTime}
-                            format="DD-MM-YY HH:mm" />
-                </Typography>
-            </StyledTableCell>
-            <StyledTableCell align="left">
-                <Typography color={"primary"}>{categoryNames[event.categoryId]}</Typography>
-            </StyledTableCell>
-            <StyledTableCell align="left">
-                <Typography color={"primary"}>
-                <Moment duration={event.startTime}
-                        date = {event.endTime}
-                        format="h:mm:ss" />
-                </Typography>
-            </StyledTableCell>
-                <StyledTableCell align="center">
-                    <IconButton aria-label="settings" color="primary">
-                                {/*onClick={() => setOpenAddCategoryDialog(true)}>*/}
-                        <SettingsIcon/>
-                    </IconButton>
-                </StyledTableCell>
-            </StyledTableRow>
-            ))}
-            </TableBody>
-            </Table>
+                <Table stickyHeader aria-label="customized table"
+                       sx={{minWidth: 200}} size="small"
+                >
+                    <TableHead>
+                        <TableRow>
+                            <TableCell><Typography color={"primary"} variant={"h3"}>Start time</Typography></TableCell>
+                            <TableCell align="left"><Typography color={"primary"}
+                                                                variant={"h3"}>Event</Typography></TableCell>
+                            <TableCell align="left"><Typography color={"primary"}
+                                                                variant={"h3"}>Duration</Typography></TableCell>
+                            <TableCell width="10" align="left"><Typography color={"primary"}
+                                                                           variant={"h3"}>Edit</Typography></TableCell>
+                        </TableRow>
+                    </TableHead>
+                    <TableBody>
+                        {events?.map((event: Event) => (
+                            <StyledTableRow
+                                key={event.id}
+                                sx={{'&:last-child td, &:last-child th': {border: 0}}}
+                            >
+                                <StyledTableCell component="th" scope="row" align="left">
+                                    <Typography color={"primary"}>
+                                        <Moment date={event.startTime}
+                                                format="DD-MM-YY HH:mm"/>
+                                    </Typography>
+                                </StyledTableCell>
+                                <StyledTableCell align="left">
+                                    <Typography color={"primary"}>{categoryNames[event.categoryId]}</Typography>
+                                </StyledTableCell>
+                                <StyledTableCell align="left">
+                                    <Typography color={"primary"}>
+                                        <Moment duration={event.startTime}
+                                                date={event.endTime}
+                                                format="h:mm:ss"/>
+                                    </Typography>
+                                </StyledTableCell>
+                                <StyledTableCell align="center">
+                                    <IconButton aria-label="settings" color="primary">
+                                        {/*onClick={() => setOpenAddCategoryDialog(true)}>*/}
+                                        <SettingsIcon/>
+                                    </IconButton>
+                                </StyledTableCell>
+                            </StyledTableRow>
+                        ))}
+                    </TableBody>
+                </Table>
             </TableContainer>
             );
 
