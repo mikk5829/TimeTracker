@@ -68,6 +68,7 @@ export default function Trends() {
                 data: new Array(12).fill(0),
                 name: categoryNames[id]
             });
+            monthlySeries[monthlySeries.length - 1].data[month] += hours;
         } else {
             match_month.data[month] += hours;
         }
@@ -78,6 +79,7 @@ export default function Trends() {
                 data: new Array(7).fill(0),
                 name: categoryNames[id]
             });
+            weeklySeries[weeklySeries.length - 1].data[weekday] += hours;
         } else {
             match_week.data[weekday] += hours;
         }
