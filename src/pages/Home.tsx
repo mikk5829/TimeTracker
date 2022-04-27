@@ -1,26 +1,49 @@
 import * as React from 'react';
 import {useEffect, useState} from 'react';
 import {
-    Button, Dialog, DialogActions, DialogTitle, IconButton, Paper, Stack,
+    Button,
+    Dialog,
+    DialogActions,
+    DialogTitle,
+    IconButton,
+    Paper,
+    Stack,
     Table,
     TableBody,
-    TableCell, tableCellClasses, TableContainer, TableHead, TableRow, TextField, Typography
+    TableCell,
+    tableCellClasses,
+    TableContainer,
+    TableHead,
+    TableRow,
+    TextField,
+    Typography
 } from "@mui/material";
-import TableSortLabel from '@mui/material/TableSortLabel';
 import AddIcon from '@mui/icons-material/Add';
 import SettingsIcon from '@mui/icons-material/Settings';
-import {Actions, Category, Event, usePersistReducer} from "../service/data";
-import {useSnackbar} from "notistack";
+import {Actions, Category, Event, useDispatch, useTrackedState} from "../service/data";
 import CategoryItem from "../components/CategoryItem";
-import EventItem from "../components/EventItem";
 import Moment from "react-moment";
 import {styled} from '@mui/material/styles';
+import {useSnackbar} from "notistack";
+import {Delete} from "@mui/icons-material";
 
 export default function Home() {
-    const {enqueueSnackbar} = useSnackbar();
-    const [{categories, categoryNames, events, error}, dispatch] = usePersistReducer() // useReducer(reducer, initialState);
+    const dispatch = useDispatch();
+    const {categories, categoryNames, events, error} = useTrackedState();
     const [openAddCategoryDialog, setOpenAddCategoryDialog] = useState(false) // open dialog to add categories
     const [addCategoryText, setAddCategoryText] = useState("") // what the user types to add as a category
+    const {enqueueSnackbar} = useSnackbar();
+    useEffect(() => {
+        if (error) {
+            enqueueSnackbar(error, {variant: "error"})
+            dispatch({type: Actions.DismissError})
+        }
+    }, [error])
+
+    useEffect(() => {
+        console.log(categories);
+        console.log(events);
+    }, [categories, events])
 
     // test table cell stuff
     const StyledTableCell = styled(TableCell)(({theme}) => ({
@@ -43,14 +66,6 @@ export default function Home() {
         },
     }));
 
-
-    useEffect(() => {
-        if (error) {
-            enqueueSnackbar(error, {variant: "error"})
-            dispatch({type: Actions.DismissError})
-        }
-    }, [error])
-
     return (
         <div>
             <Typography color={"secondary"} variant={"h4"}>TimeTracker</Typography>
@@ -62,7 +77,7 @@ export default function Home() {
                     spacing={0}
                 >
                     {/*Add buttons for settings and adding a category*/}
-                    <Typography color={"primary"} variant={"h6"}>Add Events</Typography>
+                    <Typography color={"primary"} variant={"h6"}>Categories tracked</Typography>
                     <Stack direction="row">
                         <IconButton aria-label="settings" color="primary"
                                     onClick={() => setOpenAddCategoryDialog(true)}>
@@ -78,30 +93,9 @@ export default function Home() {
                 </Stack>
                 {categories?.map((cat: Category) => {
                     return <div onClick={() => dispatch({type: Actions.ToggleActiveCategory, id: cat.id})}><CategoryItem
-                        key={cat.id} category={cat}
-                        onStartTimer={() => dispatch({type: Actions.AddEvent, id: cat.id})}
-                        onStopTimer={() => {
-                            console.log("hall");
-                            dispatch({type: Actions.StopEvent, id: cat.id})
-                        }}/></div> // stack all the user's specified categories
+                        key={cat.id} category={cat}/></div> // stack all the user's specified categories
                 })}
             </Stack>
-
-            {/*<Stack>*/}
-            {/*    <Typography variant={"h3"}>Event history</Typography>*/}
-            {/*    <Stack*/}
-            {/*        direction="column-reverse"*/}
-            {/*        justifyContent="space-between"*/}
-            {/*        alignItems="center"*/}
-            {/*        spacing={0}*/}
-            {/*    >*/}
-            {/*        /!*<Typography variant={"h3"}>Event history</Typography>*!/*/}
-            {/*        {events?.map((event: Event) => {*/}
-            {/*            return <EventItem event={event} eventName={categoryNames[event.categoryId]}/>*/}
-            {/*            // <Typography>{event.id} + {categoryNames[event.categoryId]}</Typography> // stack all the user's specified categories*/}
-            {/*        })}*/}
-            {/*    </Stack>*/}
-            {/*</Stack>*/}
 
             {/*Use a table to show event history*/}
             <Typography color={"primary"} variant={"h6"}>Event history</Typography>
@@ -143,9 +137,9 @@ export default function Home() {
                                     </Typography>
                                 </StyledTableCell>
                                 <StyledTableCell align="center">
-                                    <IconButton aria-label="settings" color="primary">
-                                        {/*onClick={() => setOpenAddCategoryDialog(true)}>*/}
-                                        <SettingsIcon/>
+                                    <IconButton aria-label="settings" color="error"
+                                                onClick={() => dispatch({type: Actions.DeleteEvent, id: event.id})}>
+                                        <Delete/>
                                     </IconButton>
                                 </StyledTableCell>
                             </StyledTableRow>
@@ -153,7 +147,7 @@ export default function Home() {
                     </TableBody>
                 </Table>
             </TableContainer>
-            );
+
 
             {/*Workflow to add a new category*/}
             <Dialog open={openAddCategoryDialog}>
