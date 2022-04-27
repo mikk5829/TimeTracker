@@ -12,7 +12,7 @@ export default function Trends() {
     const [{categories, events, error, categoryNames}, dispatch] = usePersistReducer() // useReducer(reducer, initialState);
 
     // FOR STORING TOTAL HOURS SPENT
-    let totalSeries: { name: string, data: number[] }[] = [{name: "abc", data: []}];
+    let totalSeries: { name: string, data: number[] }[] = [{name: "Total time", data: []}];
     let totalXLabels: string[] = [];
 
     // FOR STORING MONTHLY TIME SPENT
