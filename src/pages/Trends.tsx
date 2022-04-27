@@ -128,7 +128,9 @@ export default function Trends() {
         }*/
     });
 
-    console.log(totalSeries);
+    for (let i = 0; i < timelineSeries.length; i++) {
+        timelineSeries[i].data.sort(function(x,y){return x[0] - y[0];});
+    }
 
     const stateTotalTime = {
         options: {
