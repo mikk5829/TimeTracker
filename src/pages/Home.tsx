@@ -153,7 +153,7 @@ export default function Home() {
                     </TableBody>
                 </Table>
             </TableContainer>
-            );
+
 
             {/*Workflow to add a new category*/}
             <Dialog open={openAddCategoryDialog}>

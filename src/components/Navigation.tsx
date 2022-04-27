@@ -18,7 +18,7 @@ export default function Navigation({page, setPage}: NavigationProps) {
             }}
         >
             <BottomNavigationAction label="Home" icon={<Home/>}/>
-            <BottomNavigationAction label="Timeline" icon={<CalendarMonth/>}/>
+            <BottomNavigationAction label="Calendar" icon={<CalendarMonth/>}/>
             <BottomNavigationAction label="Trends" icon={<Equalizer/>}/>
         </BottomNavigation>
     );
