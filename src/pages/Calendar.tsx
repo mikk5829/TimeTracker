@@ -1,16 +1,23 @@
 import * as React from 'react';
 import {Typography} from "@mui/material";
-import {Event, usePersistReducer} from "../service/data";
-import FullCalendar, {DateInput, formatDate} from '@fullcalendar/react' // https://fullcalendar.io/docs/react
+import {Event, useTrackedState} from "../service/data";
+import FullCalendar from '@fullcalendar/react' // https://fullcalendar.io/docs/react
 import dayGridPlugin from '@fullcalendar/daygrid' // a plugin!
 import interactionPlugin from "@fullcalendar/interaction" // needed for dayClick
 import timeGridPlugin from '@fullcalendar/timegrid'
+import {useSnackbar} from "notistack";
 // https://codesandbox.io/s/github/fullcalendar/fullcalendar-example-projects/tree/master/react?file=/src/DemoApp.jsx
 
 
 export default function Calendar() {
-
-    const [{categoryNames, events}, dispatch] = usePersistReducer() // useReducer(reducer, initialState);
+    const {categories, categoryNames, events, error} = useTrackedState();
+    const {enqueueSnackbar} = useSnackbar();
+    // useEffect(() => {
+    //     if (error) {
+    //         enqueueSnackbar(error, {variant: "error"})
+    //         dispatch({type: Actions.DismissError})
+    //     }
+    // }, [error])
 
     const arrayOfObjects = events?.map((event: Event) => {
         return ({
@@ -53,34 +60,33 @@ export default function Calendar() {
     }
 
 
-        return (
-            <div>
-                <Typography color={"secondary"} variant={"h4"}>Event calendar</Typography>
-                <FullCalendar
-                    plugins={[dayGridPlugin, interactionPlugin, timeGridPlugin]}
-                    headerToolbar={{
-                        left: 'prev,next today',
-                        center: 'title',
-                        right: 'dayGridMonth,timeGridWeek,timeGridDay'
-                    }}
-                    initialView="dayGridMonth"
-                    editable={true}
-                    selectable={true}
-                    selectMirror={true}
-                    dayMaxEvents={true}
-                    //contentHeight={"auto"}
-                    stickyHeaderDates={true}
-                    height={"auto"} // ???? what to do?
-                    events={arrayOfObjects}
-                    //testing deleting/adding events
-                    eventClick={handleEventClick} // deleting event
-                    select={handleDateSelect} // adding event
-                />
+    return (
+        <div>
+            <Typography color={"secondary"} variant={"h4"}>Event calendar</Typography>
+            <FullCalendar
+                plugins={[dayGridPlugin, interactionPlugin, timeGridPlugin]}
+                headerToolbar={{
+                    left: 'prev,next today',
+                    center: 'title',
+                    right: 'dayGridMonth,timeGridWeek,timeGridDay'
+                }}
+                initialView="dayGridMonth"
+                editable={true}
+                selectable={true}
+                selectMirror={true}
+                dayMaxEvents={true}
+                //contentHeight={"auto"}
+                stickyHeaderDates={true}
+                height={"auto"} // ???? what to do?
+                events={arrayOfObjects}
+                //testing deleting/adding events
+                eventClick={handleEventClick} // deleting event
+                select={handleDateSelect} // adding event
+            />
 
 
-
-            </div>
-        );
+        </div>
+    );
 
 
 }

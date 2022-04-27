@@ -7,6 +7,7 @@ import Trends from "./Trends";
 import Calendar from "./Calendar";
 import {Box} from "@mui/material";
 
+
 export default function Base() {
     const [page, setPage] = useState(0);
 

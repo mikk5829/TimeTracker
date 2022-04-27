@@ -1,16 +1,24 @@
 import * as React from 'react';
 import {Typography} from "@mui/material";
 import ReactApexChart from "react-apexcharts";
-import {usePersistReducer, Event, Category} from "../service/data";
+import {Event, Category, Actions, useDispatch, useTrackedState} from "../service/data";
 import moment from "moment";
+import {useSnackbar} from "notistack";
+import {useEffect} from "react";
 
 
 // code example for choosing from day, week, month views https://codesandbox.io/s/react-apex-charts-m9tww?file=/src/index.js
 
 export default function Trends() {
-
-    const [{categories, events, error, categoryNames}, dispatch] = usePersistReducer() // useReducer(reducer, initialState);
-
+    const dispatch = useDispatch();
+    const {categoryNames, events, error} = useTrackedState();
+    const {enqueueSnackbar} = useSnackbar();
+    // useEffect(() => {
+    //     if (error) {
+    //         enqueueSnackbar(error, {variant: "error"})
+    //         dispatch({type: Actions.DismissError})
+    //     }
+    // }, [error])
     // FOR STORING TOTAL HOURS SPENT
     let totalSeries: { name: string, data: number[] }[] = [{name: "Total time", data: []}];
     let totalXLabels: string[] = [];

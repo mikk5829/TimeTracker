@@ -1,6 +1,7 @@
 import {v4 as uuid} from "uuid"
 import {useLocalStorage} from 'react-use'
 import {useCallback, useReducer} from "react";
+import {createContainer} from 'react-tracked';
 
 interface CategoryNames {
     [categoryId: string]: string;
@@ -12,6 +13,7 @@ class State {
     categoryNames: CategoryNames
     error: string | boolean
 
+    // Makes sure saved json is converted to classes
     public constructor(input: Partial<State> = {}) {
         this.categories = input.categories?.map((cat) => new Category(cat)) ?? []
         this.events = input.events?.map((event) => new Event(event)) ?? []
@@ -51,13 +53,6 @@ export class Category {
         this.currentEvent = input.currentEvent === undefined ? undefined : new Event(input.currentEvent)
     }
 
-    endCurrentEvent() {
-        if (this.currentEvent) {
-            this.currentEvent.endEvent(new Date())
-            this.currentEvent = undefined
-        } else throw new Error("No current event")
-    };
-
     rename(name: string) {
         this.name = name
     }
@@ -79,7 +74,8 @@ export enum Actions {
     RenameCategory = 'renameCategory',
     DismissError = 'dismissError',
     AddCategory = 'addCategory',
-    ToggleActiveCategory = 'toggleActiveCategory'
+    ToggleActiveCategory = 'toggleActiveCategory',
+    AddEventWithStopTime = 'addEventWithStopTime'
 }
 
 // @ts-ignore
@@ -96,47 +92,116 @@ export const reducer = (state, action) => {
         }
     }
 
-    function addEvent() {
+    function addEventToCategory() {
+        let categories = state.categories
+        let category: Category = categories.find((cat: { id: any; }) => cat.id === action.id)
+        if (category === undefined) {
+            const error = `Category with id ${action.id} could not be found`
+            return {
+                ...state,
+                error: error
+            }
+        }
+        const event = new Event({categoryId: action.id})
+        return {
+            ...state,
+            categories: state.categories.map((cat: Category) => cat.id === action.id ? {
+                ...cat, currentEvent: event
+            } : cat)
+        }
+    }
+
+    function addEventWithStopTime() {
+        console.log("called");
+        if (!action.id || !action.endTime || !action.startTime) {
+            const error = `Category id or endTime or startTime is missing in dispatch`
+            return {
+                ...state,
+                error: error
+            }
+        }
         let category: Category = state.categories.find((cat: { id: any; }) => cat.id === action.id)
         if (category === undefined) {
-            state.error = `Category with id ${action.id} could not be found`
-            return state;
+            const error = `Category with id ${action.id} could not be found`
+            return {
+                ...state,
+                error: error
+            }
         }
-        category.currentEvent = new Event({categoryId: action.id})
-        return state
+        let event = new Event({categoryId: action.id, startTime: action.startTime})
+        try {
+            event.endEvent(action.endTime)
+        } catch (e: any) {
+            const error = e.message
+            return {
+                ...state,
+                error: error
+            }
+        }
+        return {
+            ...state,
+            events: [event, ...state.events]
+        }
     }
 
     function stopEvent() {
-        let category = state.categories.find((cat: { id: any; }) => cat.id === action.id) as Category
-        if (category === undefined) {
-            state.error = `Category with id ${action.id} could not be found`
-            return state;
+        if (!action.id) {
+            const error = `Category id is missing in dispatch`
+            return {
+                ...state,
+                error: error
+            }
         }
-        const event = category.currentEvent
-        category.endCurrentEvent()
+        let category: Category = state.categories.find((cat: { id: any; }) => cat.id === action.id) as Category
+        if (category === undefined) {
+            const error = `Category with id ${action.id} could not be found`
+            return {
+                ...state,
+                error: error
+            }
+        }
+        const event = new Event(category.currentEvent)
+        event.endEvent(new Date())
         return {
             ...state,
-            events: [...state.events, event]
+            events: [event, ...state.events],
+            categories: state.categories.map((cat: Category) => cat.id === action.id ? {
+                ...category, currentEvent: undefined
+            } : cat)
         }
     }
 
     function renameCategory() {
-        let category = state.categories.find((cat: { id: any; }) => cat.id === action.id)
-        if (state.categories.find((cat: { name: any; }) => cat.name === action.name) !== undefined) {
-            state.error = `Category with name ${action.name} already exists`
-            return state;
+        if (!action.id || !action.name) {
+            const error = `Category id or name is missing in dispatch`
+            return {
+                ...state,
+                error: error
+            }
+        }
+        let categories = state.categories
+        let category = categories.find((cat: { id: any; }) => cat.id === action.id)
+        if (categories.find((cat: { name: any; }) => cat.name === action.name) !== undefined) {
+            const error = `Category with name ${action.name} already exists`
+            return {
+                ...state,
+                error: error
+            }
         }
         category.rename(action.name)
         return {
             ...state,
-            categories: [...state.categories, category]
+            categories: categories
         }
     }
 
     function deleteEvent() {
         if (!action.id) {
-            state.error = `Event id is missing in dispatch`
-            return state
+            const error = `Event id is missing in dispatch`
+            return {
+                ...state,
+                error: error
+            }
         }
         return {
             ...state,
@@ -146,44 +211,57 @@ export const reducer = (state, action) => {
 
     function toggleActiveCategory() {
         if (!action.id) {
-            state.error = `Category id is missing in dispatch`
-            return state
+            const error = `Category id is missing in dispatch`
+            return {
+                ...state,
+                error: error
+            }
         }
-        let category = state.categories.find((cat: Category) => cat.id === action.id) as Category
+        let categories = state.categories
+        let category = categories.find((cat: Category) => cat.id === action.id) as Category
         if (category === undefined) {
-            state.error = `Category with id ${action.id} could not be found`
-            return state;
+            const error = `Category with id ${action.id} could not be found`
+            return {
+                ...state,
+                error: error
+            }
         }
-        const active = !category.active
-        console.log(category.active)
-        category.active = active
-        console.log(category.active)
+        return {
+            ...state,
+            categories: state.categories.map((cat: Category) => cat.id === action.id ? {
+                ...cat, active: !cat.active
+            } : cat)
+        }
 
-        return state;
     }
 
     switch (action.type) {
         case Actions.AddCategory:
             return addCategory();
         case Actions.DismissError:
-            state.error = initialState.error
-            return state;
+            const error = initialState.error
+            return {
+                ...state,
+                error: error
+            }
         case Actions.RenameCategory:
             return renameCategory();
         case Actions.AddEvent:
-            return addEvent();
+            return addEventToCategory();
         case Actions.StopEvent:
             return stopEvent();
         case Actions.DeleteEvent:
             return deleteEvent();
         case Actions.ToggleActiveCategory:
             return toggleActiveCategory();
+        case Actions.AddEventWithStopTime:
+            return addEventWithStopTime();
         default:
             return state;
     }
 };
 
-export const usePersistReducer = () => {
+const usePersistReducer = () => {
     const [savedState, saveState] = useLocalStorage(
         LOCAL_STORAGE_KEY,
         initialState, {
@@ -208,3 +286,11 @@ export const usePersistReducer = () => {
 
     return useReducer(reducerLocalStorage, savedState)
 }
+
+const useValue = () => usePersistReducer()
+
+export const {
+    Provider,
+    useTrackedState,
+    useUpdate: useDispatch,
+} = createContainer(useValue);
