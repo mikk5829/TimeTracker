@@ -25,6 +25,7 @@ import CategoryItem from "../components/CategoryItem";
 import Moment from "react-moment";
 import {styled} from '@mui/material/styles';
 import {useSnackbar} from "notistack";
+import {Delete} from "@mui/icons-material";
 
 export default function Home() {
     const dispatch = useDispatch();
@@ -151,9 +152,9 @@ export default function Home() {
                                     </Typography>
                                 </StyledTableCell>
                                 <StyledTableCell align="center">
-                                    <IconButton aria-label="settings" color="primary">
-                                        {/*onClick={() => setOpenAddCategoryDialog(true)}>*/}
-                                        <SettingsIcon/>
+                                    <IconButton aria-label="settings" color="error"
+                                                onClick={() => dispatch({type: Actions.DeleteEvent, id: event.id})}>
+                                        <Delete/>
                                     </IconButton>
                                 </StyledTableCell>
                             </StyledTableRow>

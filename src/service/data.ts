@@ -75,7 +75,8 @@ export enum Actions {
     DismissError = 'dismissError',
     AddCategory = 'addCategory',
     ToggleActiveCategory = 'toggleActiveCategory',
-    AddEventWithStopTime = 'addEventWithStopTime'
+    AddEventWithStopTime = 'addEventWithStopTime',
+    DeleteCategory = 'deleteCategory'
 }
 
 // @ts-ignore
@@ -209,6 +210,21 @@ export const reducer = (state, action) => {
         }
     }
 
+
+    function deleteCategory() {
+        if (!action.id) {
+            const error = `Category id is missing in dispatch`
+            return {
+                ...state,
+                error: error
+            }
+        }
+        return {
+            ...state,
+            categories: state.categories.filter((cat: Category) => cat.id !== action.id)
+        }
+    }
+
     function toggleActiveCategory() {
         if (!action.id) {
             const error = `Category id is missing in dispatch`
@@ -256,6 +272,8 @@ export const reducer = (state, action) => {
             return toggleActiveCategory();
         case Actions.AddEventWithStopTime:
             return addEventWithStopTime();
+        case Actions.DeleteCategory:
+            return deleteCategory()
         default:
             return state;
     }

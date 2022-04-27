@@ -50,7 +50,7 @@ export default function CategoryItem({category}: CategoryItemProps) {
                 alignItems="center"
                 spacing={1}>
                 {category.currentEvent !== undefined &&
-                    <Typography color={"secondary"}><Moment interval={100} date={category.currentEvent.startTime}
+                    <Typography color={"secondary"}><Moment interval={1000} date={category.currentEvent.startTime}
                                                             format="h:mm:ss"
                                                             durationFromNow/></Typography>
                 }

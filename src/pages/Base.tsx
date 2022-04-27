@@ -6,10 +6,12 @@ import Home from "./Home";
 import Trends from "./Trends";
 import Calendar from "./Calendar";
 import {Box} from "@mui/material";
-
+import {styled} from "@mui/material/styles";
 
 export default function Base() {
     const [page, setPage] = useState(0);
+
+    const Offset = styled('div')(({theme}) => theme.mixins.toolbar); // Fixing app bar not showing stuff behind it
 
     return (
         <Box pt={2}>
@@ -19,6 +21,7 @@ export default function Base() {
             <AppBar position="fixed" color="primary" sx={{top: 'auto', bottom: 0}}>
                 <Navigation page={page} setPage={setPage}/>
             </AppBar>
+            <Offset/>
         </Box>
     );
 }
