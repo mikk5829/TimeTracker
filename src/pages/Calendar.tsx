@@ -92,10 +92,11 @@ export default function Calendar(this: any) {
     return (
         <div>
             {/*<ThemeProvider theme={theme}>*/}
-            <Typography color={"secondary"} variant={"h4"}>Event calendar</Typography>
+            <Typography color={"secondary"} variant={"h4"} fontFamily={"Epilogue"}>Event calendar</Typography>
             <Button variant={"contained"} color="primary" onClick={handleMonthClick}>
                 {/*<Typography fontFamily={"Epilogue"}>Month</Typography>*/}
-                Month
+                {/*<Typography fontFamily={"Epilogue"}>Month</Typography>*/}
+Month
             </Button>
             <Button variant={"contained"} color="primary" onClick={handleWeekClick}>
                 Week
