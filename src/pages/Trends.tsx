@@ -13,6 +13,7 @@ export default function Trends() {
     const dispatch = useDispatch();
     const {categoryNames, events, error} = useTrackedState();
     const {enqueueSnackbar} = useSnackbar();
+    const HOURSTOMILLISFACTOR = 1000 * 60 * 60
     // useEffect(() => {
     //     if (error) {
     //         enqueueSnackbar(error, {variant: "error"})
@@ -23,9 +24,27 @@ export default function Trends() {
     let totalSeries: { name: string, data: (number | null)[] }[] = [];
     let totalXLabels: string[] = [];
 
+
     // FOR STORING MONTHLY TIME SPENT
     let monthlyXLabels: string[] = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
     let monthlySeries: { name: string, data: number[] }[] = [];
+
+
+    let heatmapSeries: { name: string, data: { x: number, y: number }[] }[] = [];
+
+    for (let i = 0; i < monthlyXLabels.length; i++) {
+        heatmapSeries.push({
+            name: monthlyXLabels[i],
+            data: []
+        });
+
+        for (let day = 1; day <= 31; day++) {
+            heatmapSeries[i].data.push({
+                x: day,
+                y: Math.random() * 5 * HOURSTOMILLISFACTOR
+            });
+        }
+    }
 
     // FOR STORING WEEKLY TIME SPENT
     let weeklyXLabels: string[] = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
@@ -46,8 +65,9 @@ export default function Trends() {
         let weekday = startTime.isoWeekday() - 1;
         let date = startTime.date(); // 1-based (first day of month = 1)
 
-        let month = startTime.month(); // 0-based (jan=0, dec=11)
-        let year = startTime.month();
+        let month = startTime.month();
+        let month_string = startTime.format("MMMM");
+        let year = startTime.year();
 
         let millisDate = startTime.clone().startOf('day').valueOf()
 
@@ -71,16 +91,7 @@ export default function Trends() {
                 name: categoryNames[id],
                 index: i
             });
-
             totalXLabels.push(categoryNames[id]);
-
-            for (let j = 0; j < totalSeries.length; j++) {
-                break;
-                totalSeries[j].data.push(null);
-            }
-
-            var arr = new Array(i).fill(null);
-            arr.push(hours);
             totalSeries.push({
                 data: [hours],
                 name: categoryNames[id]
@@ -128,16 +139,15 @@ export default function Trends() {
             }
         }
 
-        /*
-        // For timeline view
-        if (match_timeline === undefined) {
-            timelineSeries.push({
-                data: [moment(event.startTime).clone().startOf('day').toDate()],
-                name: categoryNames[id]
-            });
-        } else {
-            match_timeline.data.push(moment(event.startTime).clone().startOf('day').toDate());
-        }*/
+        // For heatmap
+        if (categoryNames[id] == "sdfg") {
+            let match = heatmapSeries.find(x => x.name === month_string);
+            if (match === undefined) {
+                console.log(month_string)
+            } else {
+                match.data[date - 1].y += hours;
+            }
+        }
     });
 
     for (let i = 0; i < timelineSeries.length; i++) {
@@ -329,10 +339,52 @@ export default function Trends() {
         series: timelineSeries
     };
 
+    const stateHeatmap = {
+        options: {fill: {
+                type: 'gradient',
+                gradient: {
+                    shade: 'dark',
+                    type: "horizontal",
+                    shadeIntensity: 0.5,
+                    gradientToColors: undefined, // optional, if not defined - uses the shades of same color in series
+                    inverseColors: true,
+                    opacityFrom: 1,
+                    opacityTo: 1,
+                    stops: [0, 50, 100],
+                    colorStops: []
+                }
+            },
+            dataLabels: {
+                enabled: false
+            },
+            xaxis: {
+                //categories: [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31],
+                title: {
+                    text: "Date"
+                }
+            },
+            yaxis: {
+                title: {
+                    text: "Month"
+                }
+            },
+            colors: ["#008FFB"],
+            title: {
+                text: 'Calendar of previous year',
+                style: {
+                    fontSize: '16px',
+                    fontWeight: 'bold',
+                    fontFamily: undefined,
+                    color: 'black'
+                }
+            }
+        },
+        series: heatmapSeries
+    };
+
     return (
         <div>
             <Typography color={"secondary"} variant={"h4"}>Trends</Typography>
-
 
             <ReactApexChart
                 type="bar"
@@ -357,11 +409,19 @@ export default function Trends() {
                 width="100%"
                 height="350"
             />
+
             <ReactApexChart
                 type="bar"
                 options={stateWeeklyTime.options}
                 series={stateWeeklyTime.series}
                 width="100%"
+                height="350"
+            />
+
+            <ReactApexChart
+                type="heatmap"
+                options={stateHeatmap.options}
+                series={stateHeatmap.series}
                 height="350"
             />
         </div>
