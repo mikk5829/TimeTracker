@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {Button, Typography} from "@mui/material";
+import {Button, ThemeProvider, Typography} from "@mui/material";
 import {Actions, Category, Event, useDispatch, useTrackedState} from "../service/data";
 import FullCalendar from '@fullcalendar/react' // https://fullcalendar.io/docs/react
 import dayGridPlugin from '@fullcalendar/daygrid' // a plugin!
@@ -7,6 +7,8 @@ import interactionPlugin from "@fullcalendar/interaction" // needed for dayClick
 import timeGridPlugin from '@fullcalendar/timegrid'
 import {useSnackbar} from "notistack";
 import BasicDateTimePicker from "../components/BasicDateTimePicker";
+import {theme} from '../service/theme'
+import {calTheme} from "../service/calTheme";
 
 // https://codesandbox.io/s/82fi9?file=/src/index.tsx
 import TUICalendar from "@toast-ui/react-calendar";
@@ -18,6 +20,7 @@ import Moment from "react-moment";
 import {useCallback, useRef, useState} from "react";
 
 // must create a class i guess
+//https://github.com/nhn/toast-ui.react-calendar
 class calendar {
 }
 
@@ -39,7 +42,8 @@ export default function Calendar(this: any) {
                 color: "#ffffff", //font color
                 bgColor: "#94132B",
                 dragBgColor: "#FF7B7F",
-                borderColor: "#CA4A53"
+                borderColor: "#CA4A53",
+                fontFamily: theme.typography.fontFamily
             })
         })
 
@@ -87,8 +91,10 @@ export default function Calendar(this: any) {
 
     return (
         <div>
+            {/*<ThemeProvider theme={theme}>*/}
             <Typography color={"secondary"} variant={"h4"}>Event calendar</Typography>
             <Button variant={"contained"} color="primary" onClick={handleMonthClick}>
+                {/*<Typography fontFamily={"Epilogue"}>Month</Typography>*/}
                 Month
             </Button>
             <Button variant={"contained"} color="primary" onClick={handleWeekClick}>
@@ -102,6 +108,8 @@ export default function Calendar(this: any) {
             <TUICalendar
 
                 //ref={calendarRef}
+                theme={calTheme} // unsure how to reference theme here
+                //font-family = "Epilogue"
                 height={"auto"}
                 view = "week"
                 schedules={schedules}
