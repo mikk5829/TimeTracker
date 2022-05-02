@@ -20,7 +20,7 @@ export default function Trends() {
     //     }
     // }, [error])
     // FOR STORING TOTAL HOURS SPENT
-    let totalSeries: { name: string, data: number[] }[] = [{name: "Total time", data: []}];
+    let totalSeries: { name: string, data: (number | null)[] }[] = [];
     let totalXLabels: string[] = [];
 
     // FOR STORING MONTHLY TIME SPENT
@@ -51,8 +51,9 @@ export default function Trends() {
 
         let millisDate = startTime.clone().startOf('day').valueOf()
 
-        var duration = moment.duration(endTime.diff(startTime));
-        var hours = duration.asHours();
+        var duration = moment.duration(endTime.diff(startTime)).asMilliseconds();
+        //var hours = duration.asHours();
+        var hours = duration;
 
 
         var match_total = idxs.find(x => x.name === categoryNames[id]);
@@ -72,11 +73,22 @@ export default function Trends() {
             });
 
             totalXLabels.push(categoryNames[id]);
-            totalSeries[0].data.push(hours);
+
+            for (let j = 0; j < totalSeries.length; j++) {
+                break;
+                totalSeries[j].data.push(null);
+            }
+
+            var arr = new Array(i).fill(null);
+            arr.push(hours);
+            totalSeries.push({
+                data: [hours],
+                name: categoryNames[id]
+            });
             i++;
         } else {
             idx = match_total.index;
-            totalSeries[0].data[idx] += hours;
+            totalSeries[idx].data[0]! += hours!;
         }
 
         // For monthly time spent
@@ -129,7 +141,23 @@ export default function Trends() {
     });
 
     for (let i = 0; i < timelineSeries.length; i++) {
-        timelineSeries[i].data.sort(function(x,y){return x[0] - y[0];});
+        timelineSeries[i].data.sort(function (x, y) {
+            return x[0] - y[0];
+        });
+    }
+
+    function msToTime(duration: number) {
+        var milliseconds = Math.floor((duration % 1000) / 100),
+            seconds = Math.floor((duration / 1000) % 60),
+            minutes = Math.floor((duration / (1000 * 60)) % 60),
+            hours = Math.floor((duration / (1000 * 60 * 60)) % 24);
+
+        var hours_str = (hours < 10) ? "0" + hours : hours;
+        var minutes_str = (minutes < 10) ? "0" + minutes : minutes;
+        var seconds_str = (seconds < 10) ? "0" + seconds : seconds;
+        console.log(hours_str + ":" + minutes_str + ":" + seconds_str);
+        console.log(duration);
+        return hours_str + ":" + minutes_str;
     }
 
     const stateTotalTime = {
@@ -149,16 +177,19 @@ export default function Trends() {
                 categories: totalXLabels,
                 title: {
                     text: "Category"
+                },
+                labels: {
+                    formatter: function (value: string) {
+                        return "";
+                    }
                 }
             },
             yaxis: {
                 title: {
-                    text: "Hours"
+                    text: "Duration"
                 },
                 labels: {
-                    formatter: function (num: number) {
-                        return num.toFixed(3)
-                    }
+                    formatter: msToTime
                 }
             },
             title: {
@@ -195,12 +226,10 @@ export default function Trends() {
             },
             yaxis: {
                 title: {
-                    text: "Hours"
+                    text: "Duration"
                 },
                 labels: {
-                    formatter: function (num: number) {
-                        return num.toFixed(3)
-                    }
+                    formatter: msToTime
                 }
             },
             title: {
@@ -237,12 +266,10 @@ export default function Trends() {
             },
             yaxis: {
                 title: {
-                    text: "Hours"
+                    text: "Duration"
                 },
                 labels: {
-                    formatter: function (num: number) {
-                        return num.toFixed(3)
-                    }
+                    formatter: msToTime
                 }
             },
             title: {
@@ -283,12 +310,10 @@ export default function Trends() {
             },
             yaxis: {
                 title: {
-                    text: "Hours"
+                    text: "Duration"
                 },
                 labels: {
-                    formatter: function (num: number) {
-                        return num.toFixed(3)
-                    }
+                    formatter: msToTime
                 }
             },
             title: {
@@ -310,7 +335,7 @@ export default function Trends() {
 
 
             <ReactApexChart
-                type="line"
+                type="bar"
                 options={stateTimeline.options}
                 series={stateTimeline.series}
                 width="100%"
