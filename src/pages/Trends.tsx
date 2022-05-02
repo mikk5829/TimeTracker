@@ -5,6 +5,7 @@ import {Event, Category, Actions, useDispatch, useTrackedState} from "../service
 import moment from "moment";
 import {useSnackbar} from "notistack";
 import {useEffect} from "react";
+import {theme} from '../service/theme'
 
 
 // code example for choosing from day, week, month views https://codesandbox.io/s/react-apex-charts-m9tww?file=/src/index.js
@@ -182,6 +183,12 @@ export default function Trends() {
                     formatter: function (value: string) {
                         return "";
                     }
+                },
+                style: {
+                    fontSize: '16px',
+                    fontWeight: 'bold',
+                    fontFamily: theme.typography.fontFamily,
+                    color: theme.palette.primary.main
                 }
             },
             yaxis: {
@@ -190,6 +197,12 @@ export default function Trends() {
                 },
                 labels: {
                     formatter: msToTime
+                },
+                style: {
+                    fontSize: '16px',
+                    fontWeight: 'bold',
+                    fontFamily: theme.typography.fontFamily,
+                    color: theme.palette.primary.main
                 }
             },
             title: {
@@ -197,8 +210,8 @@ export default function Trends() {
                 style: {
                     fontSize: '16px',
                     fontWeight: 'bold',
-                    fontFamily: undefined,
-                    color: 'black'
+                    fontFamily: theme.typography.fontFamily,
+                    color: theme.palette.primary.main
                 }
             }
         },
@@ -222,6 +235,12 @@ export default function Trends() {
                 categories: monthlyXLabels,
                 title: {
                     text: "Category"
+                },
+                style: {
+                    fontSize: '16px',
+                    fontWeight: 'bold',
+                    fontFamily: theme.typography.fontFamily,
+                    color: theme.palette.primary.main
                 }
             },
             yaxis: {
@@ -230,6 +249,12 @@ export default function Trends() {
                 },
                 labels: {
                     formatter: msToTime
+                },
+                style: {
+                    fontSize: '16px',
+                    fontWeight: 'bold',
+                    fontFamily: theme.typography.fontFamily,
+                    color: theme.palette.primary.main
                 }
             },
             title: {
@@ -237,8 +262,8 @@ export default function Trends() {
                 style: {
                     fontSize: '16px',
                     fontWeight: 'bold',
-                    fontFamily: undefined,
-                    color: 'black'
+                    fontFamily: theme.typography.fontFamily,
+                    color: theme.palette.primary.main
                 }
             }
         },
@@ -262,6 +287,12 @@ export default function Trends() {
                 categories: weeklyXLabels,
                 title: {
                     text: "Category"
+                },
+                style: {
+                    fontSize: '16px',
+                    fontWeight: 'bold',
+                    fontFamily: theme.typography.fontFamily,
+                    color: theme.palette.primary.main
                 }
             },
             yaxis: {
@@ -270,6 +301,12 @@ export default function Trends() {
                 },
                 labels: {
                     formatter: msToTime
+                },
+                style: {
+                    fontSize: '16px',
+                    fontWeight: 'bold',
+                    fontFamily: theme.typography.fontFamily,
+                    color: theme.palette.primary.main
                 }
             },
             title: {
@@ -277,8 +314,8 @@ export default function Trends() {
                 style: {
                     fontSize: '16px',
                     fontWeight: 'bold',
-                    fontFamily: undefined,
-                    color: 'black'
+                    fontFamily: theme.typography.fontFamily,
+                    color: theme.palette.primary.main
                 }
             }
         },
@@ -306,6 +343,13 @@ export default function Trends() {
                     formatter: function (millis: string) {
                         return moment(millis).format("DD MMM YYYY");
                     }
+
+                },
+                style: {
+                    fontSize: '16px',
+                    fontWeight: 'bold',
+                    fontFamily: theme.typography.fontFamily,
+                    color: theme.palette.primary.main
                 }
             },
             yaxis: {
@@ -314,6 +358,12 @@ export default function Trends() {
                 },
                 labels: {
                     formatter: msToTime
+                },
+                style: {
+                    fontSize: '16px',
+                    fontWeight: 'bold',
+                    fontFamily: theme.typography.fontFamily,
+                    color: theme.palette.primary.main
                 }
             },
             title: {
@@ -321,8 +371,8 @@ export default function Trends() {
                 style: {
                     fontSize: '16px',
                     fontWeight: 'bold',
-                    fontFamily: undefined,
-                    color: 'black'
+                    fontFamily: theme.typography.fontFamily,
+                    color: theme.palette.primary.main
                 }
             }
         },
