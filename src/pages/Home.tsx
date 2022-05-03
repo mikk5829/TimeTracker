@@ -3,8 +3,9 @@ import {useEffect, useState} from 'react';
 import {
     Button,
     Dialog,
-    DialogActions,
+    DialogActions, DialogContent,
     DialogTitle,
+    Divider,
     IconButton,
     Paper,
     Stack,
@@ -32,6 +33,8 @@ export default function Home() {
     const {categories, categoryNames, events, error} = useTrackedState();
     const [openAddCategoryDialog, setOpenAddCategoryDialog] = useState(false) // open dialog to add categories
     const [addCategoryText, setAddCategoryText] = useState("") // what the user types to add as a category
+    const [openEditCategoryDialog, setOpenEditCategoryDialog] = useState(false) // open dialog to delete categories
+
     const {enqueueSnackbar} = useSnackbar();
     useEffect(() => {
         if (error) {
@@ -63,22 +66,17 @@ export default function Home() {
 
     return (
         <div>
-            <Typography color={"secondary"} variant={"h4"}>TimeTracker</Typography>
+            <Typography align="left" color={"secondary"} variant={"h1"}>TimeTracker</Typography>
             <Stack>
                 <Stack
                     direction="row"
                     justifyContent="space-between"
-                    alignItems="center"
+                    alignItems="flex-start"
                     spacing={0}
                 >
                     {/*Add buttons for settings and adding a category*/}
-                    <Typography color={"primary"} variant={"h6"}>Categories tracked</Typography>
+                    <Typography align="left" color={"primary"} variant={"h5"}>Categories tracked</Typography>
                     <Stack direction="row">
-                        <IconButton aria-label="settings" color="primary"
-                                    onClick={() => setOpenAddCategoryDialog(true)}>
-                            <SettingsIcon/>
-                        </IconButton>
-
                         <IconButton aria-label="add" color="primary" onClick={() => setOpenAddCategoryDialog(true)}>
                             <AddIcon/>
                         </IconButton>
@@ -86,26 +84,30 @@ export default function Home() {
 
                     {/*Show one row per category that the user has added*/}
                 </Stack>
-                {categories?.map((cat: Category) => {
-                    return <div onClick={() => dispatch({type: Actions.ToggleActiveCategory, id: cat.id})}><CategoryItem
-                        key={cat.id} category={cat}/></div> // stack all the user's specified categories
-                })}
+                <Stack spacing={0.5} divider={<Divider orientation="horizontal" flexItem/>}>
+                    {categories?.map((cat: Category) => {
+                        return <div onClick={() => dispatch({type: Actions.ToggleActiveCategory, id: cat.id})}>
+                            <CategoryItem
+                                key={cat.id} category={cat}/></div> // stack all the user's specified categories
+                    })}
+                </Stack>
             </Stack>
-
+<br/>
             {/*Use a table to show event history*/}
-            <Typography color={"primary"} variant={"h6"}>Event history</Typography>
+
+            <Typography align="left" color={"primary"} variant={"h5"}>Event history</Typography>
             <TableContainer component={Paper}>
                 <Table stickyHeader aria-label="customized table"
-                       sx={{minWidth: 200}} size="small"
+                       sx={{minWidth: 180}} size="small"
                 >
                     <TableHead>
                         <TableRow>
-                            <TableCell><Typography color={"primary"} variant={"h3"}>Start time</Typography></TableCell>
-                            <TableCell align="left"><Typography color={"primary"}
+                            <TableCell width = "100" align = "left"><Typography color={"primary"} variant={"h3"}>Start time</Typography></TableCell>
+                            <TableCell width = "30" align="left"><Typography color={"primary"}
                                                                 variant={"h3"}>Event</Typography></TableCell>
-                            <TableCell align="left"><Typography color={"primary"}
+                            <TableCell width="30" align="left"><Typography color={"primary"}
                                                                 variant={"h3"}>Duration</Typography></TableCell>
-                            <TableCell width="10" align="left"><Typography color={"primary"}
+                            <TableCell width="9" align="center"><Typography color={"primary"}
                                                                            variant={"h3"}>Edit</Typography></TableCell>
                         </TableRow>
                     </TableHead>
@@ -118,7 +120,7 @@ export default function Home() {
                                 <StyledTableCell component="th" scope="row" align="left">
                                     <Typography color={"primary"}>
                                         <Moment date={event.startTime}
-                                                format="DD-MM-YY HH:mm"/>
+                                                format="D/M  HH:mm"/>
                                     </Typography>
                                 </StyledTableCell>
                                 <StyledTableCell align="left">
