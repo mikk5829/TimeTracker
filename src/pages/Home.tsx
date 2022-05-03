@@ -102,12 +102,12 @@ export default function Home() {
                 >
                     <TableHead>
                         <TableRow>
-                            <TableCell width = "100"><Typography color={"primary"} variant={"h3"}>Start time</Typography></TableCell>
+                            <TableCell width = "100" align = "left"><Typography color={"primary"} variant={"h3"}>Start time</Typography></TableCell>
                             <TableCell width = "30" align="left"><Typography color={"primary"}
                                                                 variant={"h3"}>Event</Typography></TableCell>
                             <TableCell width="30" align="left"><Typography color={"primary"}
                                                                 variant={"h3"}>Duration</Typography></TableCell>
-                            <TableCell width="9" align="left"><Typography color={"primary"}
+                            <TableCell width="9" align="center"><Typography color={"primary"}
                                                                            variant={"h3"}>Edit</Typography></TableCell>
                         </TableRow>
                     </TableHead>
