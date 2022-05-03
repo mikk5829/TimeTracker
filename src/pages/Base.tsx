@@ -4,7 +4,7 @@ import AppBar from '@mui/material/AppBar';
 import Navigation from "../components/Navigation";
 import Home from "./Home";
 import Trends from "./Trends";
-import Calendar from "./Calendar";
+import CalendarView from "./CalendarView";
 import {Box} from "@mui/material";
 import {styled} from "@mui/material/styles";
 
@@ -16,7 +16,7 @@ export default function Base() {
     return (
         <Box pt={2}>
             {page === 0 && <Home/>}
-            {page === 1 && <Calendar/>}
+            {page === 1 && <CalendarView/>}
             {page === 2 && <Trends/>}
             <AppBar position="fixed" color="primary" sx={{top: 'auto', bottom: 0}}>
                 <Navigation page={page} setPage={setPage}/>

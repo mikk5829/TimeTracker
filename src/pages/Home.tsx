@@ -40,11 +40,6 @@ export default function Home() {
         }
     }, [error])
 
-    useEffect(() => {
-        console.log(categories);
-        console.log(events);
-    }, [categories, events])
-
     // test table cell stuff
     const StyledTableCell = styled(TableCell)(({theme}) => ({
         [`&.${tableCellClasses.head}`]: {
