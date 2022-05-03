@@ -1,5 +1,5 @@
-import { ITheme } from 'tui-calendar';
-import {theme} from '../service/theme'
+import {ITheme} from 'tui-calendar';
+import {theme} from './theme'
 
 export let calTheme: ITheme | undefined;
 calTheme = {
