@@ -1,14 +1,17 @@
 import * as React from 'react';
-import {Typography} from "@mui/material";
+import {Autocomplete, Button, TextField, Typography} from "@mui/material";
 import ReactApexChart from "react-apexcharts";
 import {Event, Category, Actions, useDispatch, useTrackedState} from "../service/data";
 import moment from "moment";
 import {useSnackbar} from "notistack";
-import {useEffect} from "react";
+import {useEffect, useState} from "react";
 import {theme} from '../service/theme'
 
 
 // code example for choosing from day, week, month views https://codesandbox.io/s/react-apex-charts-m9tww?file=/src/index.js
+export const isString = (item: any): item is string => {
+    return typeof item === "string";
+};
 
 export default function Trends() {
     const dispatch = useDispatch();
@@ -30,22 +33,22 @@ export default function Trends() {
     let monthlyXLabels: string[] = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
     let monthlySeries: { name: string, data: number[] }[] = [];
 
-
-    let heatmapSeries: { name: string, data: { x: number, y: number }[] }[] = [];
+    let initHeatmapSeries: { name: string, data: { x: number, y: number }[] }[] = [];
 
     for (let i = 0; i < monthlyXLabels.length; i++) {
-        heatmapSeries.push({
+        initHeatmapSeries.push({
             name: monthlyXLabels[i],
             data: []
         });
 
         for (let day = 1; day <= 31; day++) {
-            heatmapSeries[i].data.push({
+            initHeatmapSeries[i].data.push({
                 x: day,
-                y: Math.random() * 5 * HOURSTOMILLISFACTOR
+                y: Math.random() * 0 * HOURSTOMILLISFACTOR
             });
         }
     }
+    const [heatmapSeries, setHeatmapSeries] = useState(initHeatmapSeries);
 
     // FOR STORING WEEKLY TIME SPENT
     let weeklyXLabels: string[] = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
@@ -120,7 +123,7 @@ export default function Trends() {
                 data: new Array(7).fill(0),
                 name: categoryNames[id]
             });
-            weeklySeries[weeklySeries.length - 1].data[weekday] += hours;
+            weeklySeries[weeklySeries.length - 1].data[weekday] = hours;
         } else {
             match_week.data[weekday] += hours;
         }
@@ -140,15 +143,7 @@ export default function Trends() {
             }
         }
 
-        // For heatmap
-        if (categoryNames[id] == "sdfg") {
-            let match = heatmapSeries.find(x => x.name === month_string);
-            if (match === undefined) {
-                console.log(month_string)
-            } else {
-                match.data[date - 1].y += hours;
-            }
-        }
+
     });
 
     for (let i = 0; i < timelineSeries.length; i++) {
@@ -166,8 +161,6 @@ export default function Trends() {
         var hours_str = (hours < 10) ? "0" + hours : hours;
         var minutes_str = (minutes < 10) ? "0" + minutes : minutes;
         var seconds_str = (seconds < 10) ? "0" + seconds : seconds;
-        console.log(hours_str + ":" + minutes_str + ":" + seconds_str);
-        console.log(duration);
         return hours_str + ":" + minutes_str;
     }
 
@@ -390,7 +383,15 @@ export default function Trends() {
     };
 
     const stateHeatmap = {
-        options: {fill: {
+        options: {
+            tooltip: {
+                y: {
+                    formatter: (millis: number) => {
+                        return msToTime(millis);
+                    }
+                }
+            },
+            fill: {
                 type: 'gradient',
                 gradient: {
                     shade: 'dark',
@@ -408,7 +409,7 @@ export default function Trends() {
                 enabled: false
             },
             xaxis: {
-                //categories: [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31],
+                overwriteCategories: [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31],
                 title: {
                     text: "Date"
                 }
@@ -420,7 +421,7 @@ export default function Trends() {
             },
             colors: ["#008FFB"],
             title: {
-                text: 'Calendar of previous year',
+                text: 'Calendar overview of current year',
                 style: {
                     fontSize: '16px',
                     fontWeight: 'bold',
@@ -431,6 +432,52 @@ export default function Trends() {
         },
         series: heatmapSeries
     };
+
+    function computeHeatmap(category: string) {
+
+        let heatmapSeries: { name: string, data: { x: number, y: number }[] }[] = [];
+
+        for (let i = 0; i < monthlyXLabels.length; i++) {
+            heatmapSeries.push({
+                name: monthlyXLabels[i],
+                data: []
+            });
+
+            for (let day = 1; day <= 31; day++) {
+                heatmapSeries[i].data.push({
+                    x: day,
+                    y: Math.random() * 0 * HOURSTOMILLISFACTOR
+                });
+            }
+        }
+
+        events.forEach((event: Event) => {
+            let id = event.categoryId;
+
+            let startTime = moment(event.startTime);
+            let endTime = moment(event.endTime);
+
+            let date = startTime.date(); // 1-based (first day of month = 1)
+
+            let month_string = startTime.format("MMMM");
+
+            var duration = moment.duration(endTime.diff(startTime)).asMilliseconds();
+            var hours = duration;
+
+            // For heatmap
+            if (categoryNames[id] == category) {
+                let match = heatmapSeries.find(x => x.name === month_string);
+                if (match === undefined) {
+                    console.log("aaaaaaaaaaaaaaaaaaa heatmap bug")
+                } else {
+                    match.data[date - 1].y += hours;
+                }
+            }
+        });
+
+        setHeatmapSeries(heatmapSeries);
+        //stateHeatmap.series = heatmapSeries;
+    }
 
     return (
         <div>
@@ -466,6 +513,18 @@ export default function Trends() {
                 series={stateWeeklyTime.series}
                 width="100%"
                 height="350"
+            />
+
+            <Autocomplete
+                disablePortal
+                id="combo-box-demo"
+                options={Array.from(new Set(events.map((event: Event) => categoryNames[event.categoryId])).values())}
+                sx={{width: 300}}
+                onChange={(event, value) => {
+                    computeHeatmap(isString(value) ? value : "")
+
+                }}
+                renderInput={(params) => <TextField {...params} label="Select category"/>}
             />
 
             <ReactApexChart
