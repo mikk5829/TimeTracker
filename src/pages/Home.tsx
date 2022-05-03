@@ -5,6 +5,7 @@ import {
     Dialog,
     DialogActions,
     DialogTitle,
+    Divider,
     IconButton,
     Paper,
     Stack,
@@ -86,10 +87,13 @@ export default function Home() {
 
                     {/*Show one row per category that the user has added*/}
                 </Stack>
-                {categories?.map((cat: Category) => {
-                    return <div onClick={() => dispatch({type: Actions.ToggleActiveCategory, id: cat.id})}><CategoryItem
-                        key={cat.id} category={cat}/></div> // stack all the user's specified categories
-                })}
+                <Stack spacing={0.5} divider={<Divider orientation="horizontal" flexItem/>}>
+                    {categories?.map((cat: Category) => {
+                        return <div onClick={() => dispatch({type: Actions.ToggleActiveCategory, id: cat.id})}>
+                            <CategoryItem
+                                key={cat.id} category={cat}/></div> // stack all the user's specified categories
+                    })}
+                </Stack>
             </Stack>
 
             {/*Use a table to show event history*/}

@@ -27,9 +27,9 @@ export default function CalendarView(this: any) {
                 name: category.name,
                 // insert color mapping per category
                 color: "#ffffff", //font color
-                bgColor: "#94132B",
-                dragBgColor: "#FF7B7F",
-                borderColor: "#CA4A53",
+                bgColor: "#" + category.color.hex,
+                dragBgColor: "#" + category.color.hex,
+                borderColor: "#" + category.color.hex,
                 fontFamily: theme.typography.fontFamily
             })
         })

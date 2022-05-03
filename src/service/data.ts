@@ -2,6 +2,8 @@ import {v4 as uuid} from "uuid"
 import {useLocalStorage} from 'react-use'
 import {useCallback, useReducer} from "react";
 import {createContainer} from 'react-tracked';
+import {Color, ColorPicker, createColor} from "material-ui-color";
+
 
 interface CategoryNames {
     [categoryId: string]: string;
@@ -44,6 +46,7 @@ export class Category {
     name: string;
     active: boolean = true;
     currentEvent?: Event = undefined;
+    color: Color
 
     public constructor(input: Partial<Category> = {}) {
         if (input.name === null || input.name === undefined) throw new Error("Category have no name")
@@ -51,6 +54,7 @@ export class Category {
         this.name = input.name
         this.active = input.active ?? true
         this.currentEvent = input.currentEvent === undefined ? undefined : new Event(input.currentEvent)
+        this.color = input.color ?? createColor('#000000')
     }
 
     rename(name: string) {
@@ -76,7 +80,8 @@ export enum Actions {
     AddCategory = 'addCategory',
     ToggleActiveCategory = 'toggleActiveCategory',
     AddEventWithStopTime = 'addEventWithStopTime',
-    DeleteCategory = 'deleteCategory'
+    DeleteCategory = 'deleteCategory',
+    ChangeCategoryColor = 'changeCategoryColor'
 }
 
 // @ts-ignore
@@ -172,6 +177,31 @@ export const reducer = (state, action) => {
         }
     }
 
+    function changeCategoryColor() {
+        if (!action.id || !action.color) {
+            const error = `Category id or color is missing in dispatch`
+            return {
+                ...state,
+                error: error
+            }
+        }
+        let categories = state.categories
+        let category = categories.find((cat: Category) => cat.id === action.id) as Category
+        if (category === undefined) {
+            const error = `Category with id ${action.id} could not be found`
+            return {
+                ...state,
+                error: error
+            }
+        }
+        return {
+            ...state,
+            categories: state.categories.map((cat: Category) => cat.id === action.id ? {
+                ...cat, color: action.color
+            } : cat)
+        }
+    }
+
     function renameCategory() {
         if (!action.id || !action.name) {
             const error = `Category id or name is missing in dispatch`
@@ -182,6 +212,13 @@ export const reducer = (state, action) => {
         }
         let categories = state.categories
         let category = categories.find((cat: { id: any; }) => cat.id === action.id)
+        if (category === undefined) {
+            const error = `Category with id ${action.id} could not be found`
+            return {
+                ...state,
+                error: error
+            }
+        }
         if (categories.find((cat: { name: any; }) => cat.name === action.name) !== undefined) {
             const error = `Category with name ${action.name} already exists`
             return {
@@ -189,10 +226,11 @@ export const reducer = (state, action) => {
                 error: error
             }
         }
-        category.rename(action.name)
         return {
             ...state,
-            categories: categories
+            categories: state.categories.map((cat: Category) => cat.id === action.id ? {
+                ...cat, name: action.name
+            } : cat)
         }
     }
 
@@ -274,6 +312,8 @@ export const reducer = (state, action) => {
             return addEventWithStopTime();
         case Actions.DeleteCategory:
             return deleteCategory()
+        case Actions.ChangeCategoryColor:
+            return changeCategoryColor()
         default:
             return state;
     }
