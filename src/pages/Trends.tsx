@@ -484,7 +484,7 @@ export default function Trends() {
             <Typography color={"secondary"} variant={"h4"}>Trends</Typography>
 
             <ReactApexChart
-                type="bar"
+                type="line"
                 options={stateTimeline.options}
                 series={stateTimeline.series}
                 width="100%"
