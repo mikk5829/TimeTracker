@@ -385,7 +385,7 @@ export default function Trends() {
 
 
             <ReactApexChart
-                type="bar"
+                type="line"
                 options={stateTimeline.options}
                 series={stateTimeline.series}
                 width="100%"
