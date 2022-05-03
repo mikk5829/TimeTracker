@@ -19,6 +19,7 @@ import {Color, ColorPicker, createColor} from "material-ui-color";
 import Moment from "react-moment";
 import BasicDateTimePicker from "./BasicDateTimePicker";
 import {Edit, MoreTime, PlayArrow, Stop} from "@mui/icons-material";
+import {theme} from '../service/theme'
 
 type CategoryItemProps = { category: Category }
 
@@ -106,7 +107,7 @@ export default function CategoryItem({category}: CategoryItemProps) {
                     </Box>
                 </DialogActions>
             </Dialog>
-            <Typography color={category.active ? 'secondary' : 'primary'}>{category.name}</Typography>
+            <Typography variant = "h3" color={theme.palette.secondary.dark}>{category.name}</Typography>
             <Stack
                 direction="row"
                 justifyContent="space-between"
@@ -119,24 +120,24 @@ export default function CategoryItem({category}: CategoryItemProps) {
                                 durationFromNow/></Typography>
                 }
                 {category.currentEvent !== undefined ?
-                    <Avatar sx={{bgcolor: theme.palette.secondary.main, width: 50, height: 50}} onClick={() => {
+                    <Avatar sx={{bgcolor: theme.palette.secondary.main, width: 40, height: 40}} onClick={() => {
                         dispatch({type: Actions.StopEvent, id: category.id})
                     }}>
                         <Stop/>
                     </Avatar>
                     :
-                    <Avatar sx={{bgcolor: theme.palette.success.light, width: 50, height: 50}} onClick={() => {
+                    <Avatar sx={{bgcolor: theme.palette.success.light, width: 40, height: 40}} onClick={() => {
                         dispatch({type: Actions.AddEvent, id: category.id})
                     }}>
                         <PlayArrow/>
                     </Avatar>
                 }
                 <Avatar onClick={() => setOpenAddTimeDialog(true)}
-                        sx={{bgcolor: "#" + category.color.hex, width: 50, height: 50}}>
+                        sx={{bgcolor: "#" + category.color.hex, width: 40, height: 40}}>
                     <MoreTime/>
                 </Avatar>
                 <Avatar onClick={() => setOpenChangeDialog(true)}
-                        sx={{bgcolor: "#" + category.color.hex, width: 50, height: 50}}>
+                        sx={{bgcolor: "#" + category.color.hex, width: 40, height: 40}}>
                     <Edit/>
                 </Avatar>
             </Stack>

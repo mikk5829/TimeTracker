@@ -3,7 +3,7 @@ import {useEffect, useState} from 'react';
 import {
     Button,
     Dialog,
-    DialogActions,
+    DialogActions, DialogContent,
     DialogTitle,
     Divider,
     IconButton,
@@ -33,6 +33,8 @@ export default function Home() {
     const {categories, categoryNames, events, error} = useTrackedState();
     const [openAddCategoryDialog, setOpenAddCategoryDialog] = useState(false) // open dialog to add categories
     const [addCategoryText, setAddCategoryText] = useState("") // what the user types to add as a category
+    const [openEditCategoryDialog, setOpenEditCategoryDialog] = useState(false) // open dialog to delete categories
+
     const {enqueueSnackbar} = useSnackbar();
     useEffect(() => {
         if (error) {
@@ -73,13 +75,8 @@ export default function Home() {
                     spacing={0}
                 >
                     {/*Add buttons for settings and adding a category*/}
-                    <Typography color={"primary"} variant={"h6"}>Categories tracked</Typography>
+                    <Typography color={"primary"} variant={"h5"}>Categories tracked</Typography>
                     <Stack direction="row">
-                        <IconButton aria-label="settings" color="primary"
-                                    onClick={() => setOpenAddCategoryDialog(true)}>
-                            <SettingsIcon/>
-                        </IconButton>
-
                         <IconButton aria-label="add" color="primary" onClick={() => setOpenAddCategoryDialog(true)}>
                             <AddIcon/>
                         </IconButton>
@@ -97,7 +94,7 @@ export default function Home() {
             </Stack>
 
             {/*Use a table to show event history*/}
-            <Typography color={"primary"} variant={"h6"}>Event history</Typography>
+            <Typography color={"primary"} variant={"h5"}>Event history</Typography>
             <TableContainer component={Paper}>
                 <Table stickyHeader aria-label="customized table"
                        sx={{minWidth: 200}} size="small"
