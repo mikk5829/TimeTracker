@@ -77,7 +77,7 @@ export default function Home() {
                     spacing={0}
                 >
                     {/*Add buttons for settings and adding a category*/}
-                    <Typography color={"primary"} variant={"h6"}>Add Events</Typography>
+                    <Typography color={"primary"} variant={"h6"}>Categories tracked</Typography>
                     <Stack direction="row">
                         <IconButton aria-label="settings" color="primary"
                                     onClick={() => setOpenAddCategoryDialog(true)}>
@@ -96,21 +96,6 @@ export default function Home() {
                         key={cat.id} category={cat}/></div> // stack all the user's specified categories
                 })}
             </Stack>
-
-            {/*<Stack>*/}
-            {/*    <Typography variant={"h3"}>Event history</Typography>*/}
-            {/*    <Stack*/}
-            {/*        direction="column-reverse"*/}
-            {/*        justifyContent="space-between"*/}
-            {/*        alignItems="center"*/}
-            {/*        spacing={0}*/}
-            {/*    >*/}
-            {/*        /!*<Typography variant={"h3"}>Event history</Typography>*!/*/}
-            {/*        {events?.map((event: Event) => {*/}
-            {/*            return <Typography>{categoryNames[event.categoryId]}</Typography> // stack all the user's specified categories*/}
-            {/*        })}*/}
-            {/*    </Stack>*/}
-            {/*</Stack>*/}
 
             {/*Use a table to show event history*/}
             <Typography color={"primary"} variant={"h6"}>Event history</Typography>

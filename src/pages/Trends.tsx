@@ -5,6 +5,7 @@ import {Event, Category, Actions, useDispatch, useTrackedState} from "../service
 import moment from "moment";
 import {useSnackbar} from "notistack";
 import {useEffect} from "react";
+import {theme} from '../service/theme'
 
 
 // code example for choosing from day, week, month views https://codesandbox.io/s/react-apex-charts-m9tww?file=/src/index.js
@@ -20,7 +21,7 @@ export default function Trends() {
     //     }
     // }, [error])
     // FOR STORING TOTAL HOURS SPENT
-    let totalSeries: { name: string, data: number[] }[] = [{name: "Total time", data: []}];
+    let totalSeries: { name: string, data: (number | null)[] }[] = [];
     let totalXLabels: string[] = [];
 
     // FOR STORING MONTHLY TIME SPENT
@@ -31,8 +32,11 @@ export default function Trends() {
     let weeklyXLabels: string[] = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
     let weeklySeries: { name: string, data: number[] }[] = [];
 
+    let timelineSeries: { name: string, data: any[] }[] = [];
+
     let idxs: { name: string, index: number }[] = [];
     let i = 0;
+
     events.forEach((event: Event) => {
 
         let id = event.categoryId;
@@ -42,36 +46,54 @@ export default function Trends() {
 
         let weekday = startTime.isoWeekday() - 1;
         let date = startTime.date(); // 1-based (first day of month = 1)
+
         let month = startTime.month(); // 0-based (jan=0, dec=11)
         let year = startTime.month();
 
-        var duration = moment.duration(endTime.diff(startTime));
-        var hours = duration.asHours();
+        let millisDate = startTime.clone().startOf('day').valueOf()
+
+        var duration = moment.duration(endTime.diff(startTime)).asMilliseconds();
+        //var hours = duration.asHours();
+        var hours = duration;
 
 
-        var match_total = idxs.find(x => x.name == categoryNames[id]);
-        var match_month = monthlySeries.find(x => x.name == categoryNames[id]);
-        var match_week = weeklySeries.find(x => x.name == categoryNames[id]);
+        var match_total = idxs.find(x => x.name === categoryNames[id]);
+        var match_month = monthlySeries.find(x => x.name === categoryNames[id]);
+        var match_week = weeklySeries.find(x => x.name === categoryNames[id]);
+
+        var match_timeline = timelineSeries.find(x => x.name === categoryNames[id]);
+
 
         var idx = -1;
 
         // For total time spent
-        if (match_total == undefined) {
+        if (match_total === undefined) {
             idxs.push({
                 name: categoryNames[id],
                 index: i
             });
 
             totalXLabels.push(categoryNames[id]);
-            totalSeries[0].data.push(hours);
+
+            for (let j = 0; j < totalSeries.length; j++) {
+                break;
+                totalSeries[j].data.push(null);
+            }
+
+            var arr = new Array(i).fill(null);
+            arr.push(hours);
+            totalSeries.push({
+                data: [hours],
+                name: categoryNames[id]
+            });
             i++;
         } else {
             idx = match_total.index;
-            totalSeries[0].data[idx] += hours;
+            totalSeries[idx].data[0]! += hours!;
         }
 
         // For monthly time spent
-        if (match_month == undefined) {
+        if (match_month === undefined) {
             monthlySeries.push({
                 data: new Array(12).fill(0),
                 name: categoryNames[id]
@@ -82,7 +104,7 @@ export default function Trends() {
         }
 
         // For weekly time spent
-        if (match_week == undefined) {
+        if (match_week === undefined) {
             weeklySeries.push({
                 data: new Array(7).fill(0),
                 name: categoryNames[id]
@@ -92,9 +114,52 @@ export default function Trends() {
             match_week.data[weekday] += hours;
         }
 
+        // For timeline view
+        if (match_timeline === undefined) {
+            timelineSeries.push({
+                data: [[millisDate, hours]],
+                name: categoryNames[id]
+            });
+        } else {
+            let match_date = match_timeline.data.find(x => x[0] === millisDate);
+            if (match_date === undefined) {
+                match_timeline.data.push([millisDate, hours]);
+            } else {
+                match_date[1] += hours;
+            }
+        }
+
+        /*
+        // For timeline view
+        if (match_timeline === undefined) {
+            timelineSeries.push({
+                data: [moment(event.startTime).clone().startOf('day').toDate()],
+                name: categoryNames[id]
+            });
+        } else {
+            match_timeline.data.push(moment(event.startTime).clone().startOf('day').toDate());
+        }*/
     });
 
-    console.log(totalSeries);
+    for (let i = 0; i < timelineSeries.length; i++) {
+        timelineSeries[i].data.sort(function (x, y) {
+            return x[0] - y[0];
+        });
+    }
+
+    function msToTime(duration: number) {
+        var milliseconds = Math.floor((duration % 1000) / 100),
+            seconds = Math.floor((duration / 1000) % 60),
+            minutes = Math.floor((duration / (1000 * 60)) % 60),
+            hours = Math.floor((duration / (1000 * 60 * 60)) % 24);
+
+        var hours_str = (hours < 10) ? "0" + hours : hours;
+        var minutes_str = (minutes < 10) ? "0" + minutes : minutes;
+        var seconds_str = (seconds < 10) ? "0" + seconds : seconds;
+        console.log(hours_str + ":" + minutes_str + ":" + seconds_str);
+        console.log(duration);
+        return hours_str + ":" + minutes_str;
+    }
 
     const stateTotalTime = {
         options: {
@@ -113,16 +178,31 @@ export default function Trends() {
                 categories: totalXLabels,
                 title: {
                     text: "Category"
+                },
+                labels: {
+                    formatter: function (value: string) {
+                        return "";
+                    }
+                },
+                style: {
+                    fontSize: '16px',
+                    fontWeight: 'bold',
+                    fontFamily: theme.typography.fontFamily,
+                    color: theme.palette.primary.main
                 }
             },
             yaxis: {
                 title: {
-                    text: "Hours"
+                    text: "Duration"
                 },
                 labels: {
-                    formatter: function (num: number) {
-                        return num.toFixed(3)
-                    }
+                    formatter: msToTime
+                },
+                style: {
+                    fontSize: '16px',
+                    fontWeight: 'bold',
+                    fontFamily: theme.typography.fontFamily,
+                    color: theme.palette.primary.main
                 }
             },
             title: {
@@ -130,8 +210,8 @@ export default function Trends() {
                 style: {
                     fontSize: '16px',
                     fontWeight: 'bold',
-                    fontFamily: undefined,
-                    color: 'black'
+                    fontFamily: theme.typography.fontFamily,
+                    color: theme.palette.primary.main
                 }
             }
         },
@@ -155,16 +235,26 @@ export default function Trends() {
                 categories: monthlyXLabels,
                 title: {
                     text: "Category"
+                },
+                style: {
+                    fontSize: '16px',
+                    fontWeight: 'bold',
+                    fontFamily: theme.typography.fontFamily,
+                    color: theme.palette.primary.main
                 }
             },
             yaxis: {
                 title: {
-                    text: "Hours"
+                    text: "Duration"
                 },
                 labels: {
-                    formatter: function (num: number) {
-                        return num.toFixed(3)
-                    }
+                    formatter: msToTime
+                },
+                style: {
+                    fontSize: '16px',
+                    fontWeight: 'bold',
+                    fontFamily: theme.typography.fontFamily,
+                    color: theme.palette.primary.main
                 }
             },
             title: {
@@ -172,8 +262,8 @@ export default function Trends() {
                 style: {
                     fontSize: '16px',
                     fontWeight: 'bold',
-                    fontFamily: undefined,
-                    color: 'black'
+                    fontFamily: theme.typography.fontFamily,
+                    color: theme.palette.primary.main
                 }
             }
         },
@@ -197,16 +287,26 @@ export default function Trends() {
                 categories: weeklyXLabels,
                 title: {
                     text: "Category"
+                },
+                style: {
+                    fontSize: '16px',
+                    fontWeight: 'bold',
+                    fontFamily: theme.typography.fontFamily,
+                    color: theme.palette.primary.main
                 }
             },
             yaxis: {
                 title: {
-                    text: "Hours"
+                    text: "Duration"
                 },
                 labels: {
-                    formatter: function (num: number) {
-                        return num.toFixed(3)
-                    }
+                    formatter: msToTime
+                },
+                style: {
+                    fontSize: '16px',
+                    fontWeight: 'bold',
+                    fontFamily: theme.typography.fontFamily,
+                    color: theme.palette.primary.main
                 }
             },
             title: {
@@ -214,17 +314,83 @@ export default function Trends() {
                 style: {
                     fontSize: '16px',
                     fontWeight: 'bold',
-                    fontFamily: undefined,
-                    color: 'black'
+                    fontFamily: theme.typography.fontFamily,
+                    color: theme.palette.primary.main
                 }
             }
         },
         series: weeklySeries
     };
 
+    const stateTimeline = {
+        options: {
+            chart: {
+                id: "basic-bar"
+            },
+            plotOptions: {
+                bar: {
+                    borderRadius: 2
+                }
+            },
+            dataLabels: {
+                enabled: false
+            },
+            xaxis: {
+                title: {
+                    text: "Date"
+                },
+                labels: {
+                    formatter: function (millis: string) {
+                        return moment(millis).format("DD MMM YYYY");
+                    }
+
+                },
+                style: {
+                    fontSize: '16px',
+                    fontWeight: 'bold',
+                    fontFamily: theme.typography.fontFamily,
+                    color: theme.palette.primary.main
+                }
+            },
+            yaxis: {
+                title: {
+                    text: "Duration"
+                },
+                labels: {
+                    formatter: msToTime
+                },
+                style: {
+                    fontSize: '16px',
+                    fontWeight: 'bold',
+                    fontFamily: theme.typography.fontFamily,
+                    color: theme.palette.primary.main
+                }
+            },
+            title: {
+                text: 'Historical overview',
+                style: {
+                    fontSize: '16px',
+                    fontWeight: 'bold',
+                    fontFamily: theme.typography.fontFamily,
+                    color: theme.palette.primary.main
+                }
+            }
+        },
+        series: timelineSeries
+    };
+
     return (
         <div>
             <Typography color={"secondary"} variant={"h4"}>Trends</Typography>
+
+
+            <ReactApexChart
+                type="bar"
+                options={stateTimeline.options}
+                series={stateTimeline.series}
+                width="100%"
+                height="350"
+            />
 
             <ReactApexChart
                 type="bar"

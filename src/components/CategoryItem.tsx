@@ -63,7 +63,7 @@ export default function CategoryItem({category}: CategoryItemProps) {
                                         onClick={() => dispatch({type: Actions.AddEvent, id: category.id})}>
                         Start timer
                     </Button>}
-                <Button variant={'contained'} color={'secondary'} onClick={() => setOpenAddTimeDialog(true)}>
+                <Button variant={'contained'} color={'primary'} onClick={() => setOpenAddTimeDialog(true)}>
                     Add time
                 </Button>
             </Stack>
