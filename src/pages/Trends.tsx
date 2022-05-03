@@ -433,7 +433,7 @@ export default function Trends() {
             },
             colors: [theme.palette.primary.main],
             title: {
-                text: 'Calendar overview of current year',
+                text: 'Calendar heatmap',
                 style: {
                     fontSize: '16px',
                     fontWeight: 'bold',
