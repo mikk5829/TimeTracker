@@ -85,14 +85,13 @@ export default function Home() {
                     {/*Show one row per category that the user has added*/}
                 </Stack>
                 <Stack spacing={0.5} divider={<Divider orientation="horizontal" flexItem/>}>
-                    {categories?.map((cat: Category) => {
-                        return <div onClick={() => dispatch({type: Actions.ToggleActiveCategory, id: cat.id})}>
-                            <CategoryItem
-                                key={cat.id} category={cat}/></div> // stack all the user's specified categories
+                    {categories?.filter((cat: Category) => cat.active).map((cat: Category) => {
+                        return <CategoryItem
+                            key={cat.id} category={cat}/> // stack all the user's specified categories
                     })}
                 </Stack>
             </Stack>
-<br/>
+            <br/>
             {/*Use a table to show event history*/}
 
             <Typography align="left" color={"primary"} variant={"h5"}>Event history</Typography>
@@ -102,13 +101,14 @@ export default function Home() {
                 >
                     <TableHead>
                         <TableRow>
-                            <TableCell width = "100" align = "left"><Typography color={"primary"} variant={"h3"}>Start time</Typography></TableCell>
-                            <TableCell width = "30" align="left"><Typography color={"primary"}
-                                                                variant={"h3"}>Event</Typography></TableCell>
+                            <TableCell width="100" align="left"><Typography color={"primary"} variant={"h3"}>Start
+                                time</Typography></TableCell>
                             <TableCell width="30" align="left"><Typography color={"primary"}
-                                                                variant={"h3"}>Duration</Typography></TableCell>
+                                                                           variant={"h3"}>Event</Typography></TableCell>
+                            <TableCell width="30" align="left"><Typography color={"primary"}
+                                                                           variant={"h3"}>Duration</Typography></TableCell>
                             <TableCell width="9" align="center"><Typography color={"primary"}
-                                                                           variant={"h3"}>Edit</Typography></TableCell>
+                                                                            variant={"h3"}>Edit</Typography></TableCell>
                         </TableRow>
                     </TableHead>
                     <TableBody>

@@ -5,7 +5,7 @@ import {
     Dialog,
     DialogActions,
     DialogContent,
-    DialogTitle,
+    DialogTitle, FormHelperText,
     Stack,
     TextField,
     Typography,
@@ -27,6 +27,7 @@ export default function CategoryItem({category}: CategoryItemProps) {
     const dispatch = useDispatch();
     const [openAddTimeDialog, setOpenAddTimeDialog] = useState(false)
     const [openChangeDialog, setOpenChangeDialog] = useState(false)
+    const [openDeleteDialog, setOpenDeleteDialog] = useState(false)
     const [startTime, setStartTime] = useState<Date | null>(new Date())
     const [endTime, setEndTime] = useState<Date | null>(new Date())
     const [color, setColor] = useState(category.color ?? createColor('cyan'))
@@ -74,19 +75,27 @@ export default function CategoryItem({category}: CategoryItemProps) {
                     </Box>
                 </DialogActions>
             </Dialog>
+
             <Dialog fullWidth maxWidth={'md'} open={openChangeDialog} onClose={() => setOpenChangeDialog(false)}>
                 <DialogTitle>Edit {category.name}</DialogTitle>
                 <DialogContent>
                     <Stack spacing={2}>
-                        <Typography variant={"body1"}>Pick a category color</Typography>
-                        <ColorPicker value={color} onChange={handleColorChange} palette={palette} hideTextfield
-                                     disableAlpha/>
-                        <TextField label={"Name"} value={name} onChange={(event) => setName(event.target.value)}/>
+                        <Stack justifyContent="center"
+                               alignItems="center"
+                               spacing={2} direction={"row"}>
+                            <Typography variant={"body1"}>Pick a category color</Typography>
+                            <ColorPicker value={color} onChange={handleColorChange} palette={palette} hideTextfield
+                                         disableAlpha/>
+                        </Stack>
+                        <TextField label={"Change name"} value={name}
+                                   onChange={(event) => setName(event.target.value)}/>
                     </Stack>
                 </DialogContent>
                 <DialogActions>
                     <Box pr={1} pb={1}>
                         <Stack spacing={1} direction="row">
+                            <Button color={"error"} variant={'text'}
+                                    onClick={() => setOpenDeleteDialog(true)}>Delete</Button>
                             <Button variant={'contained'} onClick={() => setOpenChangeDialog(false)}>Cancel</Button>
                             <Button variant={'contained'} onClick={() => {
                                 dispatch({
@@ -107,7 +116,29 @@ export default function CategoryItem({category}: CategoryItemProps) {
                     </Box>
                 </DialogActions>
             </Dialog>
-            <Typography variant = "h3" color={theme.palette.secondary.dark}>{category.name}</Typography>
+
+            <Dialog fullWidth maxWidth={'md'} open={openDeleteDialog} onClose={() => setOpenDeleteDialog(false)}>
+                <DialogTitle>Are you sure you want to delete {category.name}?</DialogTitle>
+                <DialogActions>
+                    <Box pr={1} pb={1}>
+                        <Stack spacing={1} direction="row">
+                            <Button color={"error"} variant={'text'}
+                                    onClick={() => {
+                                        setOpenChangeDialog(false)
+                                        setOpenDeleteDialog(false)
+                                        dispatch({
+                                            type: Actions.ToggleActiveCategory,
+                                            id: category.id
+                                        })
+                                    }}>Delete</Button>
+                            <Button variant={'contained'} onClick={() => {
+                                setOpenDeleteDialog(false)
+                            }}>Cancel</Button>
+                        </Stack>
+                    </Box>
+                </DialogActions>
+            </Dialog>
+            <Typography variant="h3" color={theme.palette.secondary.dark}>{category.name}</Typography>
             <Stack
                 direction="row"
                 justifyContent="space-between"
