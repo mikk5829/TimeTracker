@@ -13,6 +13,10 @@ export const isString = (item: any): item is string => {
     return typeof item === "string";
 };
 
+function mod(n: number, m: number) {
+    return ((n % m) + m) % m;
+}
+
 export default function Trends() {
     const dispatch = useDispatch();
     const {categoryNames, events, error} = useTrackedState();
@@ -30,14 +34,25 @@ export default function Trends() {
 
 
     // FOR STORING MONTHLY TIME SPENT
-    let monthlyXLabels: string[] = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+    let months: string[] = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+    let monthlyXLabels: string[] = [];
+    let today = new Date();
+    let d: Date;
+    let month: string;
+
+    for(let i = 5; i >= 0; i--) {
+        d = new Date(today.getFullYear(), today.getMonth() - i, 1);
+        month = months[d.getMonth()];
+        monthlyXLabels.push(month);
+    }
+
     let monthlySeries: { name: string, data: number[] }[] = [];
 
     let initHeatmapSeries: { name: string, data: { x: number, y: number }[] }[] = [];
 
-    for (let i = 0; i < monthlyXLabels.length; i++) {
+    for (let i = 0; i < months.length; i++) {
         initHeatmapSeries.push({
-            name: monthlyXLabels[i],
+            name: months[i],
             data: []
         });
 
@@ -86,6 +101,10 @@ export default function Trends() {
 
         var match_timeline = timelineSeries.find(x => x.name === categoryNames[id]);
 
+        let minyear = today.getFullYear();
+        if ((today.getMonth() - 5) < 0) {
+            minyear -= 1;
+        }
 
         var idx = -1;
 
@@ -107,13 +126,13 @@ export default function Trends() {
         }
 
         // For monthly time spent
-        if (match_month === undefined) {
+        if (match_month === undefined && year >= minyear && monthlyXLabels.includes(month_string)) {
             monthlySeries.push({
                 data: new Array(12).fill(0),
                 name: categoryNames[id]
             });
-            monthlySeries[monthlySeries.length - 1].data[month] += hours;
-        } else {
+            monthlySeries[monthlySeries.length - 1].data[month] = hours;
+        } else if (match_month !== undefined && year >= minyear && monthlyXLabels.includes(month_string)) {
             match_month.data[month] += hours;
         }
 
@@ -142,16 +161,33 @@ export default function Trends() {
                 match_date[1] += hours;
             }
         }
-
-
     });
+
+    for (let i = 0; i < monthlySeries.length; i++) {
+        let newData = [];
+
+        for (let j = mod((new Date().getMonth() - 6), 12);;j++) {
+            if (j===12) {
+                j = 0;
+            }
+
+            if (monthlyXLabels.includes(months[j])) {
+                newData.push(monthlySeries[i].data[j])
+            }
+
+            if (j === new Date().getMonth()) {
+                break;
+            }
+        }
+        monthlySeries[i].data = newData;
+    }
 
     for (let i = 0; i < timelineSeries.length; i++) {
         timelineSeries[i].data.sort(function (x, y) {
             return x[0] - y[0];
         });
     }
-
+    
     function msToTime(duration: number) {
         var milliseconds = Math.floor((duration % 1000) / 100),
             seconds = Math.floor((duration / 1000) % 60),
@@ -437,9 +473,9 @@ export default function Trends() {
 
         let heatmapSeries: { name: string, data: { x: number, y: number }[] }[] = [];
 
-        for (let i = 0; i < monthlyXLabels.length; i++) {
+        for (let i = 0; i < months.length; i++) {
             heatmapSeries.push({
-                name: monthlyXLabels[i],
+                name: months[i],
                 data: []
             });
 
