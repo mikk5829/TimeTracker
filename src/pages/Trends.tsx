@@ -412,21 +412,33 @@ export default function Trends() {
                 overwriteCategories: [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31],
                 title: {
                     text: "Date"
+                },
+                style: {
+                    fontSize: '16px',
+                    fontWeight: 'bold',
+                    fontFamily: theme.typography.fontFamily,
+                    color: theme.palette.primary.main
                 }
             },
             yaxis: {
                 title: {
                     text: "Month"
+                },
+                style: {
+                    fontSize: '16px',
+                    fontWeight: 'bold',
+                    fontFamily: theme.typography.fontFamily,
+                    color: theme.palette.primary.main
                 }
             },
-            colors: ["#008FFB"],
+            colors: [theme.palette.primary.main],
             title: {
                 text: 'Calendar overview of current year',
                 style: {
                     fontSize: '16px',
                     fontWeight: 'bold',
-                    fontFamily: undefined,
-                    color: 'black'
+                    fontFamily: theme.typography.fontFamily,
+                    color: theme.palette.primary.main
                 }
             }
         },
