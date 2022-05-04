@@ -4,8 +4,9 @@ import {AdapterDateFns} from '@mui/x-date-pickers/AdapterDateFns';
 import {LocalizationProvider} from '@mui/x-date-pickers/LocalizationProvider';
 import {DateTimePicker} from '@mui/x-date-pickers/DateTimePicker';
 import {Dispatch} from "react";
-import {Box} from "@mui/material";
+import {Box, Stack} from "@mui/material";
 import daLocale from 'date-fns/locale/da';
+import {DatePicker, TimePicker} from "@mui/x-date-pickers";
 
 export type BasicDateTimePickerProps = {
     label: string
@@ -17,14 +18,24 @@ export default function BasicDateTimePicker({label, value, setValue}: BasicDateT
     return (
         <Box p={1}>
             <LocalizationProvider dateAdapter={AdapterDateFns} locale={daLocale}>
-                <DateTimePicker
-                    renderInput={(props) => <TextField {...props} fullWidth/>}
-                    label={label}
-                    value={value}
-                    onChange={(newValue) => {
-                        setValue(newValue);
-                    }}
-                />
+                <Stack direction={'row'} spacing={2}>
+                    <DatePicker
+                        renderInput={(props) => <TextField {...props} fullWidth/>}
+                        label={label + " date"}
+                        value={value}
+                        onChange={(newValue) => {
+                            setValue(newValue);
+                        }}
+                    />
+                    <TimePicker
+                        renderInput={(props) => <TextField {...props} fullWidth/>}
+                        label={label + " time"}
+                        value={value}
+                        onChange={(newValue) => {
+                            setValue(newValue);
+                        }}
+                    />
+                </Stack>
             </LocalizationProvider>
         </Box>
     );
