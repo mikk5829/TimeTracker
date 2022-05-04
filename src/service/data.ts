@@ -2,7 +2,7 @@ import {v4 as uuid} from "uuid"
 import {useLocalStorage} from 'react-use'
 import {useCallback, useReducer} from "react";
 import {createContainer} from 'react-tracked';
-import {Color, ColorPicker, createColor} from "material-ui-color";
+import {Color, createColor} from "material-ui-color";
 
 
 interface CategoryNames {
@@ -88,7 +88,8 @@ export enum Actions {
     ToggleActiveCategory = 'toggleActiveCategory',
     AddEventWithStopTime = 'addEventWithStopTime',
     DeleteCategory = 'deleteCategory',
-    ChangeCategoryColor = 'changeCategoryColor'
+    ChangeCategoryColor = 'changeCategoryColor',
+    EditEvent = 'editEvent'
 }
 
 // @ts-ignore
@@ -125,7 +126,6 @@ export const reducer = (state, action) => {
     }
 
     function addEventWithStopTime() {
-        console.log("called");
         if (!action.id || !action.endTime || !action.startTime) {
             const error = `Category id or endTime or startTime is missing in dispatch`
             return {
@@ -255,6 +255,29 @@ export const reducer = (state, action) => {
         }
     }
 
+    function editEvent() {
+        if (!action.id || !action.startTime || !action.endTime) {
+            const error = `Event id or startTime or endTime is missing in dispatch`
+            return {
+                ...state,
+                error: error
+            }
+        }
+        if (action.startTime > action.endTime) {
+            const error = 'End Time is before Start Time'
+            return {
+                ...state,
+                error: error
+            }
+        }
+        return {
+            ...state,
+            events: state.events.map((event: Event) => event.id === action.id ? {
+                ...event, startTime: action.startTime, endTime: action.endTime
+            } : event)
+        }
+    }
+
 
     function deleteCategory() {
         if (!action.id) {
@@ -321,6 +344,8 @@ export const reducer = (state, action) => {
             return deleteCategory()
         case Actions.ChangeCategoryColor:
             return changeCategoryColor()
+        case Actions.EditEvent:
+            return editEvent()
         default:
             return state;
     }

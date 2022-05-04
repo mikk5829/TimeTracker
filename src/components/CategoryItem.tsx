@@ -54,8 +54,8 @@ export default function CategoryItem({category}: CategoryItemProps) {
                 <DialogTitle>Add new {category.name} time block</DialogTitle>
                 <DialogContent>
                     <Stack spacing={2}>
-                        <BasicDateTimePicker label={"Start time"} value={startTime} setValue={setStartTime}/>
-                        <BasicDateTimePicker label={"End time"} value={endTime} setValue={setEndTime}/>
+                        <BasicDateTimePicker label={"Start"} value={startTime} setValue={setStartTime}/>
+                        <BasicDateTimePicker label={"End"} value={endTime} setValue={setEndTime}/>
                     </Stack>
                 </DialogContent>
                 <DialogActions>

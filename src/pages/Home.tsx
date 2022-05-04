@@ -26,7 +26,8 @@ import CategoryItem from "../components/CategoryItem";
 import Moment from "react-moment";
 import {styled} from '@mui/material/styles';
 import {useSnackbar} from "notistack";
-import {Delete} from "@mui/icons-material";
+import {Delete, Edit} from "@mui/icons-material";
+import {ChangeEvent} from "../components/ChangeEvent";
 
 export default function Home() {
     const dispatch = useDispatch();
@@ -34,6 +35,9 @@ export default function Home() {
     const [openAddCategoryDialog, setOpenAddCategoryDialog] = useState(false) // open dialog to add categories
     const [addCategoryText, setAddCategoryText] = useState("") // what the user types to add as a category
     const [openEditCategoryDialog, setOpenEditCategoryDialog] = useState(false) // open dialog to delete categories
+    const [openChangeDialog, setOpenChangeDialog] = useState(false) // open dialog to edit events
+    const [currentEvent, setCurrentEvent] = useState<Event>(new Event()) //
+
 
     const {enqueueSnackbar} = useSnackbar();
     useEffect(() => {
@@ -66,6 +70,8 @@ export default function Home() {
 
     return (
         <div>
+            <ChangeEvent event={currentEvent} openChangeDialog={openChangeDialog}
+                         setOpenChangeDialog={setOpenChangeDialog}/>
             <Typography align="left" color={"secondary"} variant={"h1"}>TimeTracker</Typography>
             <Stack>
                 <Stack
@@ -135,8 +141,11 @@ export default function Home() {
                                 </StyledTableCell>
                                 <StyledTableCell align="center">
                                     <IconButton aria-label="settings" color="error"
-                                                onClick={() => dispatch({type: Actions.DeleteEvent, id: event.id})}>
-                                        <Delete/>
+                                                onClick={() => {
+                                                    setCurrentEvent(event)
+                                                    setOpenChangeDialog(true)
+                                                }}>
+                                        <Edit/>
                                     </IconButton>
                                 </StyledTableCell>
                             </StyledTableRow>
