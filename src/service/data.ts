@@ -9,10 +9,15 @@ interface CategoryNames {
     [categoryId: string]: string;
 }
 
+interface CategoryColors {
+    [categoryId: string]: Color;
+}
+
 class State {
     categories: Category[]
     events: Event[]
     categoryNames: CategoryNames
+    categoryColors: CategoryColors
     error: string | boolean
 
     // Makes sure saved json is converted to classes
@@ -20,6 +25,7 @@ class State {
         this.categories = input.categories?.map((cat) => new Category(cat)) ?? []
         this.events = input.events?.map((event) => new Event(event)) ?? []
         this.categoryNames = input.categoryNames ?? {}
+        this.categoryColors = input.categoryColors ?? {}
         this.error = input.error ?? false
     }
 }
@@ -68,6 +74,7 @@ export const initialState: State = {
     categories: [],
     events: [],
     categoryNames: {},
+    categoryColors: {},
     error: false
 }
 
@@ -334,6 +341,7 @@ const usePersistReducer = () => {
             const newState = reducer(state, action)
 
             newState?.categories.map((cat: { id: string | number; name: any; }) => newState.categoryNames[cat.id] = cat.name)
+            newState?.categories.map((cat: { id: string | number; color: any; }) => newState.categoryColors[cat.id] = cat.color)
 
             saveState(newState)
 
