@@ -103,7 +103,7 @@ export default function Home() {
             <Typography align="left" color={"primary"} variant={"h5"}>Event history</Typography>
             <TableContainer component={Paper}>
                 <Table stickyHeader aria-label="customized table"
-                       sx={{minWidth: 180}} size="small"
+                       sx={{maxWidth: '100%'}} size="small"
                 >
                     <TableHead>
                         <TableRow>
