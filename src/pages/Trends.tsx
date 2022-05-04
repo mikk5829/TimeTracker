@@ -74,7 +74,10 @@ export default function Trends() {
     let idxs: { name: string, index: number }[] = [];
     let i = 0;
 
-    let colors = Array.from(new Set(events.map((event: Event) => "#" + categoryColors[event.categoryId].hex)).values());
+    let eventsUniqueIds: string[] = [];
+    eventsUniqueIds = Array.from(new Set(events.map((event: Event) => event.categoryId)));
+    //let colors = Array.from(new Set(events.map((event: Event) => "#" + categoryColors[event.categoryId].hex)).values());
+    let colors = Array.from(eventsUniqueIds.map((id: string) => "#" + categoryColors[id].hex))
     console.log(colors);
 
     events.forEach((event: Event) => {
