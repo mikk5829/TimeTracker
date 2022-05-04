@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {createRef, useCallback, useRef, useState} from 'react';
+import {createRef, useCallback, useEffect, useRef, useState} from 'react';
 import {Button, IconButton, Stack, Typography} from "@mui/material";
 import {Category, Event, useDispatch, useTrackedState} from "../service/data";
 import {useSnackbar} from "notistack";
@@ -17,6 +17,7 @@ import {ArrowCircleLeft, ArrowCircleRight, ArrowLeft} from "@mui/icons-material"
 
 export default function CalendarView(this: any) {
     const {categories, categoryNames, events} = useTrackedState();
+    const [heading, setHeading] = useState('')
     let calendarRef = useRef(null);
 
     // create calendars per each Category
@@ -52,8 +53,8 @@ export default function CalendarView(this: any) {
     const handleChangeViewClick = (view: string) => {
         // @ts-ignore
         const calendarInstance = calendarRef.current.getInstance();
-
         calendarInstance.changeView(view);
+        setRenderRangeText()
     }
 
     // handle prev/next
@@ -61,13 +62,56 @@ export default function CalendarView(this: any) {
         // @ts-ignore
         const calendarInstance = calendarRef.current.getInstance();
         calendarInstance.next();
+        setRenderRangeText()
     };
 
     const handleClickPrevButton = () => {
         // @ts-ignore
         const calendarInstance = calendarRef.current.getInstance();
         calendarInstance.prev();
+        setRenderRangeText()
     };
+
+    useEffect((() => setRenderRangeText()), [])
+
+    function setRenderRangeText() {
+        // @ts-ignore
+        const calendarInst = calendarRef.current.getInstance()
+        const view = calendarInst.getViewName();
+        const calDate = calendarInst.getDate();
+        const rangeStart = calendarInst.getDateRangeStart();
+        const rangeEnd = calendarInst.getDateRangeEnd();
+        let year = calDate.getFullYear();
+        let month = calDate.getMonth() + 1;
+        let date = calDate.getDate();
+        let dateRangeText = "";
+        let endMonth, endDate, start, end;
+
+        switch (view) {
+            case "month":
+                dateRangeText = `${month}-${year}`;
+                break;
+            case "week":
+                year = rangeStart.getFullYear();
+                month = rangeStart.getMonth() + 1;
+                date = rangeStart.getDate();
+                endMonth = rangeEnd.getMonth() + 1;
+                endDate = rangeEnd.getDate();
+
+                start = `${
+                    date < 10 ? "0" : ""
+                }${date}-${month < 10 ? "0" : ""}${month}-${year}`;
+                end = `${
+                    endDate < 10 ? "0" : ""
+                }${endDate}-${endMonth < 10 ? "0" : ""}${endMonth}-${year}`;
+                dateRangeText = `${start} ~ ${end}`;
+                break;
+            default:
+                dateRangeText = `${date}-${month}-${year}`;
+        }
+        setHeading(dateRangeText)
+    }
+
 
     return (
         <div>
@@ -97,6 +141,9 @@ export default function CalendarView(this: any) {
                     <ArrowCircleRight/>
                 </IconButton>
             </Stack>
+            <Stack direction="row"
+                   justifyContent="center"
+                   alignItems="center"><Typography>{heading}</Typography></Stack>
             <Calendar
                 ref={calendarRef}
                 height="100%"
