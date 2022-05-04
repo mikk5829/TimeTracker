@@ -74,10 +74,18 @@ export default function Trends() {
     let idxs: { name: string, index: number }[] = [];
     let i = 0;
 
-    let eventsUniqueIds: string[] = [];
-    eventsUniqueIds = Array.from(new Set(events.map((event: Event) => event.categoryId)));
+    let eventsUniqueIds: string[] = Array.from(new Set(events.map((event: Event) => event.categoryId)));
     //let colors = Array.from(new Set(events.map((event: Event) => "#" + categoryColors[event.categoryId].hex)).values());
-    let colors = Array.from(eventsUniqueIds.map((id: string) => "#" + categoryColors[id].hex))
+    let colors: string[] = []; // = Array.from(eventsUniqueIds.map((id: string) => "#" + categoryColors[id].hex))
+
+    eventsUniqueIds.forEach((id: string) => {
+        if (id in categoryColors) {
+            colors.push('#' + categoryColors[id].hex);
+        } else {
+            colors.push('#FFFFFF'); // Default color
+        }
+    });
+
     console.log(colors);
 
     events.forEach((event: Event) => {
